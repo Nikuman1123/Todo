@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ToDoApp</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>ToDo</h1>
+    <input type="text" id="taskInput" placeholder="タスクを入力" />
+    <br />
+    <button id="addBtn">Add</button>
+    <ul id="taskList">
+      <!-- JavaScriptでliを追加 -->
+    </ul>
+    <script>
+      let taskInput = document.getElementById('taskInput');
+      let taskList = document.getElementById('taskList');
+
+      // ボタンが押された時の処理を関数として記述。クリックされたら
+      function addTask() {
+        let li = document.createElement('li');
+        let taskText = taskInput.value;
+        taskInput.value = '';
+
+        if (taskText.trim() === '') {
+          return; // 入力が空の場合は何もしない
+        }
+
+        // チェックボックスを設定
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            li.style.textDecoration = 'line-through';
+          } else {
+            li.style.textDecoration = 'none';
+          }
+        });
+        // チェックボックスを追加
+        li.appendChild(checkbox);
+
+        // タスクのテキストを追加
+        // li.textContent = taskText;
+        // li.appendChild(document.createTextNode(taskText));
+        const textSpan = document.createElement('span');
+        textSpan.textContent = taskText;
+        li.appendChild(textSpan);
+
+        // デリートボタンの設定
+        let dlButton = document.createElement('button');
+        dlButton.classList.add('delete-btn');
+        dlButton.textContent = 'del';
+
+        // デリート押下されたらリストから削除する
+        dlButton.addEventListener('click', function () {
+          li.remove();
+        });
+
+        // デリートボタンを追加
+        li.appendChild(dlButton);
+
+        // タスクリストとして追加
+        taskList.appendChild(li);
+
+        // タスクを追加したときに入力欄へ自動でフォーカスを戻す
+        taskInput.focus();
+      }
+
+      // Addボタンが押された時
+      let addBtn = document.getElementById('addBtn');
+      addBtn.addEventListener('click', addTask);
+
+      // 変換途中のエンター押下じゃないかチェック
+      let isComposing = false;
+      taskInput.addEventListener('compositionstart', () => {
+        isComposing = true;
+      });
+      taskInput.addEventListener('compositionend', () => {
+        isComposing = false;
+      });
+
+      // 確定後のエンターキー押下を検知する
+      taskInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !isComposing) {
+          addTask();
+        }
+      });
+    </script>
+  </body>
+</html>
