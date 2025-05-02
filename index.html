@@ -16,6 +16,10 @@
     <input type="date" id="dueDate" />
     <br />
     <button id="addBtn">Add</button>
+    <button id="showAll">Show All</button>
+    <button id="showActive">Show Active</button>
+    <button id="showCompleted">Show Completed</button>
+
     <ul id="taskList">
       <!-- JavaScriptでliを追加 -->
     </ul>
@@ -23,7 +27,7 @@
       const taskInput = document.getElementById('taskInput');
       const taskList = document.getElementById('taskList');
 
-      // ボタンが押された時の処理を関数として記述。クリックされたら
+      // ボタンが押された時の処理を関数として記述。
       function addTask() {
         let taskText = taskInput.value;
         taskInput.value = '';
@@ -71,6 +75,8 @@
           // 日付を表示に加える
           textSpan.textContent += `(~${dueDate})`;
         }
+        // 日付欄を空欄にする
+        dueDateInput.value = '';
 
         // テキストを追加
         // li.appendChild(textSpan);
@@ -100,7 +106,7 @@
         taskInput.focus();
       }
 
-      // Addボタンが押された時
+      // Addボタン押下時
       const addBtn = document.getElementById('addBtn');
       addBtn.addEventListener('click', addTask);
 
@@ -119,6 +125,35 @@
           addTask();
         }
       });
+
+      // フィルターボタンを押した時の動作
+      function pressFilterButtons(filterType) {
+        const allTask = document.querySelectorAll('#taskList li');
+        allTask.forEach((li) => {
+          const checkbox = li.querySelector('input[type = checkbox]');
+          if (filterType === 'all') {
+            li.style.display = 'flex';
+          } else if (filterType === 'active') {
+            li.style.display = checkbox && checkbox.checked ? 'none' : 'flex';
+          } else if (filterType === 'completed') {
+            li.style.display = checkbox && checkbox.checked ? 'flex' : 'none';
+          }
+        });
+      }
+
+      //押下されたフィルターボタン応じたパラメータを渡す
+      // 全表示
+      document
+        .getElementById('showAll')
+        .addEventListener('click', () => pressFilterButtons('all'));
+      // 未完了
+      document
+        .getElementById('showActive')
+        .addEventListener('click', () => pressFilterButtons('active'));
+      // 完了
+      document
+        .getElementById('showCompleted')
+        .addEventListener('click', () => pressFilterButtons('completed'));
     </script>
   </body>
 </html>
