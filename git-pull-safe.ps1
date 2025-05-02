@@ -6,11 +6,12 @@ Write-Host "`n--- git status 出力確認 ---"
 $Status | ForEach-Object { Write-Host "`t$_" }
 Write-Host "--- 出力確認ここまで ---`n"
 
-if ($Status -eq "") {
+if (-not $Status -or $Status.Count -eq 0) {
     Write-Host "✔ 作業ツリーはクリーンです。git pull を実行します。"
     git pull
 } else {
     Write-Host "⚠ ローカルに未コミットの変更があります。git pull はスキップされました。"
 }
+
 
 Write-Host "=== Git Pull チェック終了 ===`n"
