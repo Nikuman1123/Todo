@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["dlbutton", "Roboto"]
+  "auto-run-command.rules": [
+    {
+      "command": "workbench.action.tasks.runTask",
+      "args": "Git Pull with Check",
+      "when": "folderOpen",
+      "match": ".*"
+    }
+  ]
 }
