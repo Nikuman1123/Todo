@@ -6,5 +6,6 @@
       "when": "folderOpen",
       "match": ".*"
     }
-  ]
+  ],
+  "cSpell.words": ["Roboto"]
 }

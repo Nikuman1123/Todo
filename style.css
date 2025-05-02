@@ -27,7 +27,14 @@ button {
   transition: 0.2s ease;
 }
 button:hover {
-  background-color: aqua;
+  background-color: rgb(60, 66, 130);
+}
+.filter-button {
+  border-radius: 16px;
+}
+
+.filter-button:hover {
+  background-color: orange;
 }
 .delete-btn {
   background-color: crimson;
