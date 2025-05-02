@@ -2,21 +2,25 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "git-pull-mac",
+      "label": "Git Pull with Check",
       "type": "shell",
       "command": "${workspaceFolder}/git-pull-safe.sh",
-      "problemMatcher": []
-    },
-    {
-      "label": "git-pull-win",
-      "type": "shell",
-      "command": "powershell.exe",
-      "args": [
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        "${workspaceFolder}\\git-pull-safe.ps1"
-      ],
+      "linux": {
+        "command": "${workspaceFolder}/git-pull-safe.sh"
+      },
+      "osx": {
+        "command": "${workspaceFolder}/git-pull-safe.sh"
+      },
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "${workspaceFolder}\\git-pull-safe.ps1"
+        ]
+      },
+      "runOn": "folderOpen",
       "problemMatcher": []
     }
   ]
