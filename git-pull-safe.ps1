@@ -2,6 +2,9 @@
 
 $Status = git status --porcelain | ForEach-Object { $_.Trim() }
 
+Write-Host "`n--- git status 出力確認 ---"
+$Status | ForEach-Object { Write-Host "`t$_" }
+Write-Host "--- 出力確認ここまで ---`n"
 
 if ($Status -eq "") {
     Write-Host "✔ 作業ツリーはクリーンです。git pull を実行します。"
