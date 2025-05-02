@@ -21,7 +21,10 @@
         ]
       },
       "runOn": "folderOpen",
-      "problemMatcher": []
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always"
+      }
     }
   ]
 }
