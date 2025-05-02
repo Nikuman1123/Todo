@@ -20,7 +20,7 @@
           "${workspaceFolder}\\git-pull-safe.ps1"
         ]
       },
-      "runOn": "folderOpen",
+      // "runOn": "folderOpen",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always"
