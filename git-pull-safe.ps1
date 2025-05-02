@@ -1,6 +1,7 @@
 ﻿Write-Host "`n=== Git Pull チェック開始: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss") ==="
 
-$Status = git status --porcelain
+$Status = git status --porcelain | ForEach-Object { $_.Trim() }
+
 
 if ($Status -eq "") {
     Write-Host "✔ 作業ツリーはクリーンです。git pull を実行します。"
