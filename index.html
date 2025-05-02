@@ -73,7 +73,11 @@
             return;
           }
           // 日付を表示に加える
-          textSpan.textContent += `(~${dueDate})`;
+          const dueDateSpan = document.createElement('span');
+          dueDateSpan.classList.add('dueDate');
+          dueDateSpan.textContent = `（〜${dueDate}）`;
+
+          rightDiv.appendChild(dueDateSpan);
         }
         // 日付欄を空欄にする
         dueDateInput.value = '';
