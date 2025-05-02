@@ -13,6 +13,7 @@
   <body>
     <h1>ToDo</h1>
     <input type="text" id="taskInput" placeholder="タスクを入力" />
+    <input type="date" id="dueDate" />
     <br />
     <button id="addBtn">Add</button>
     <ul id="taskList">
@@ -24,19 +25,20 @@
 
       // ボタンが押された時の処理を関数として記述。クリックされたら
       function addTask() {
-        const li = document.createElement('li');
-        const leftDiv = document.createElement('div');
-        leftDiv.classList.add('left');
-        const rightDiv = document.createElement('div');
-        rightDiv.classList.add('right');
-        const textSpan = document.createElement('span');
-
         let taskText = taskInput.value;
         taskInput.value = '';
 
         if (taskText.trim() === '') {
           return; // 入力が空の場合は何もしない
         }
+
+        // liは左右でdivを分割、テキストはspanへ
+        const li = document.createElement('li');
+        const leftDiv = document.createElement('div');
+        leftDiv.classList.add('left');
+        const rightDiv = document.createElement('div');
+        rightDiv.classList.add('right');
+        const textSpan = document.createElement('span');
 
         // チェックボックスを設定
         const checkbox = document.createElement('input');
@@ -48,14 +50,29 @@
             li.style.textDecoration = 'none';
           }
         });
+
         // チェックボックスを追加
-        // li.appendChild(checkbox);
         leftDiv.appendChild(checkbox);
 
         // タスクのテキストを追加
-        // li.textContent = taskText;
-        // li.appendChild(document.createTextNode(taskText));
         textSpan.textContent = taskText;
+
+        // 期限日付の取得とチェック
+        const dueDateInput = document.getElementById('dueDate');
+        const dueDate = dueDateInput.value;
+        if (dueDate !== '') {
+          const dateObj = new Date(dueDate);
+          const isValid = !isNaN(dateObj.getTime());
+
+          if (!isValid) {
+            alert('正しい日付を入力してください');
+            return;
+          }
+          // 日付を表示に加える
+          textSpan.textContent += `(~${dueDate})`;
+        }
+
+        // テキストを追加
         // li.appendChild(textSpan);
         leftDiv.appendChild(textSpan);
 
@@ -70,7 +87,6 @@
         });
 
         // デリートボタンを追加
-        // li.appendChild(dlButton);
         rightDiv.appendChild(dlButton);
 
         // leftDivとrightDivをliに追加
