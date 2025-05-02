@@ -16,9 +16,9 @@
     <input type="date" id="dueDate" />
     <br />
     <button id="addBtn">Add</button>
-    <button id="showAll">Show All</button>
-    <button id="showActive">Show Active</button>
-    <button id="showCompleted">Show Completed</button>
+    <button id="showAll" class="filter-button">Show All</button>
+    <button id="showActive" class="filter-button">Show Active</button>
+    <button id="showCompleted" class="filter-button">Show Completed</button>
 
     <ul id="taskList">
       <!-- JavaScriptでliを追加 -->
@@ -110,7 +110,7 @@
         taskInput.focus();
       }
 
-      // Addボタン押下時
+      // Addボタン押下
       const addBtn = document.getElementById('addBtn');
       addBtn.addEventListener('click', addTask);
 
@@ -145,19 +145,31 @@
         });
       }
 
+      function updateFilterButtons(activeButtonId) {
+        const buttons = document.querySelectorAll('.filter-button');
+        buttons.forEach((btn) => {
+          btn.classList.remove('active');
+        });
+        const activeBtn = document.getElementById(activeButtonId);
+        activeBtn.classList.add('active');
+      }
+
       //押下されたフィルターボタン応じたパラメータを渡す
       // 全表示
-      document
-        .getElementById('showAll')
-        .addEventListener('click', () => pressFilterButtons('all'));
+      document.getElementById('showAll').addEventListener('click', () => {
+        pressFilterButtons('all');
+        updateFilterButtons('showAll');
+      });
       // 未完了
-      document
-        .getElementById('showActive')
-        .addEventListener('click', () => pressFilterButtons('active'));
+      document.getElementById('showActive').addEventListener('click', () => {
+        pressFilterButtons('active');
+        updateFilterButtons('showActive');
+      });
       // 完了
-      document
-        .getElementById('showCompleted')
-        .addEventListener('click', () => pressFilterButtons('completed'));
+      document.getElementById('showCompleted').addEventListener('click', () => {
+        pressFilterButtons('completed');
+        updateFilterButtons('showCompleted');
+      });
     </script>
   </body>
 </html>

@@ -65,3 +65,9 @@ li {
   font-size: 18px;
   color: gray;
 }
+
+.filter-button.active {
+  background-color: orange;
+  border: 2px solid teal;
+  font-weight: bold;
+}
