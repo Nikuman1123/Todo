@@ -1,3 +1,9 @@
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 h1 {
   background-color: teal;
   font-size: 24px;
@@ -23,6 +29,16 @@ li {
   justify-content: space-between;
 }
 
-span {
-  margin-left: 10px; //とりあえず
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.left span {
+  margin-left: 8px;
+}
+
+.right button {
+  margin-left: 12px;
+  padding: 4px 8px;
 }

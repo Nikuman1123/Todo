@@ -14,12 +14,18 @@
       <!-- JavaScriptでliを追加 -->
     </ul>
     <script>
-      let taskInput = document.getElementById('taskInput');
-      let taskList = document.getElementById('taskList');
+      const taskInput = document.getElementById('taskInput');
+      const taskList = document.getElementById('taskList');
 
       // ボタンが押された時の処理を関数として記述。クリックされたら
       function addTask() {
-        let li = document.createElement('li');
+        const li = document.createElement('li');
+        const leftDiv = document.createElement('div');
+        leftDiv.classList.add('left');
+        const rightDiv = document.createElement('div');
+        rightDiv.classList.add('right');
+        const textSpan = document.createElement('span');
+
         let taskText = taskInput.value;
         taskInput.value = '';
 
@@ -28,7 +34,7 @@
         }
 
         // チェックボックスを設定
-        let checkbox = document.createElement('input');
+        const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.addEventListener('change', () => {
           if (checkbox.checked) {
@@ -38,17 +44,18 @@
           }
         });
         // チェックボックスを追加
-        li.appendChild(checkbox);
+        // li.appendChild(checkbox);
+        leftDiv.appendChild(checkbox);
 
         // タスクのテキストを追加
         // li.textContent = taskText;
         // li.appendChild(document.createTextNode(taskText));
-        const textSpan = document.createElement('span');
         textSpan.textContent = taskText;
-        li.appendChild(textSpan);
+        // li.appendChild(textSpan);
+        leftDiv.appendChild(textSpan);
 
         // デリートボタンの設定
-        let dlButton = document.createElement('button');
+        const dlButton = document.createElement('button');
         dlButton.classList.add('delete-btn');
         dlButton.textContent = 'del';
 
@@ -58,7 +65,12 @@
         });
 
         // デリートボタンを追加
-        li.appendChild(dlButton);
+        // li.appendChild(dlButton);
+        rightDiv.appendChild(dlButton);
+
+        // leftDivとrightDivをliに追加
+        li.appendChild(leftDiv);
+        li.appendChild(rightDiv);
 
         // タスクリストとして追加
         taskList.appendChild(li);
@@ -68,7 +80,7 @@
       }
 
       // Addボタンが押された時
-      let addBtn = document.getElementById('addBtn');
+      const addBtn = document.getElementById('addBtn');
       addBtn.addEventListener('click', addTask);
 
       // 変換途中のエンター押下じゃないかチェック
