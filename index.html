@@ -15,7 +15,7 @@
     <input type="text" id="taskInput" placeholder="タスクを入力" />
     <input type="date" id="dueDate" />
     <br />
-    <button id="addBtn">Add</button>
+    <button id="addBtn" class="addBtn">Add</button>
     <button id="showAll" class="filter-button">Show All</button>
     <button id="showActive" class="filter-button">Show Active</button>
     <button id="showCompleted" class="filter-button">Show Completed</button>
@@ -170,6 +170,72 @@
         pressFilterButtons('completed');
         updateFilterButtons('showCompleted');
       });
+
+      // お天気情報の取得処理
+      getWeather();
+      async function getWeather() {
+        const url =
+          // 'https://api.open-meteo.com/v1/forecast?latitude=34.6938&longitude=135.5011&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo';
+          'https://api.open-meteo.com/v1/forecast?latitude=53.3331&longitude=-6.2489&daily=weather_code,precipitation_probability_max&timezone=auto';
+
+        try {
+          const response = await fetch(url);
+          const weatherData = await response.json();
+          console.log('取得成功:', weatherData); // ← ここで確認
+          editData(weatherData);
+        } catch (error) {
+          console.error('エラー内容:', error); // ← エラー詳細を確認
+        }
+      }
+
+      function editData(weatherData) {
+        const weatherList = [];
+
+        weatherData.daily.time.forEach((date, i) => {
+          const codes = weatherData.daily.weather_code[i];
+          const rain = weatherData.daily.precipitation_probability_max[i];
+          const emoji = getWeatherEmoji(codes);
+
+          const weatherObj = {
+            date,
+            codes,
+            emoji,
+            rain,
+          };
+
+          weatherList.push(weatherObj);
+        });
+        console.log('整形後の天気データ:', weatherList);
+        // console.log(JSON.stringify(weatherList, null, 2));
+      }
+
+      function getWeatherEmoji(codes) {
+        const emojiMap = [
+          { codes: [0, 1], emoji: '☀️' },
+          { codes: [2], emoji: '☁️' },
+          { codes: [3], emoji: '⛅️' },
+          { codes: [45, 48], emoji: '😶‍🌫️' },
+          { codes: [51, 56], emoji: '☔️😶‍🌫️' },
+          { codes: [53, 57], emoji: '☔️☔️😶‍🌫️' },
+          { codes: [55], emoji: '☔️☔️☔️😶‍🌫️' },
+          { codes: [56, 57], emoji: '🌫️🥶' },
+          { codes: [61], emoji: '☔️' },
+          { codes: [63], emoji: '☔️☔️' },
+          { codes: [65], emoji: '☔️☔️☔️' },
+          { codes: [66, 67], emoji: '☔️🥶' },
+          { codes: [71, 77, 85], emoji: '❄️' },
+          { codes: [73], emoji: '❄️❄️' },
+          { codes: [75, 86], emoji: '❄️❄️❄️' },
+          { codes: [80], emoji: '☔️⏳' },
+          { codes: [81], emoji: '☔️☔️⏳' },
+          { codes: [82], emoji: '☔️☔️☔️⏳' },
+          { codes: [95], emoji: '☔️⚡️' },
+          { codes: [96], emoji: '🧊☔️⚡️' },
+          { codes: [99], emoji: '🧊🧊☔️☔️⚡️⚡️' },
+        ];
+        const match = emojiMap.find((entry) => entry.codes.includes(codes));
+        return match ? match.emoji : '?';
+      }
     </script>
   </body>
 </html>
