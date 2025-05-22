@@ -14,11 +14,11 @@
     <h1>ToDo</h1>
     <input type="text" id="taskInput" placeholder="タスクを入力" />
     <input type="date" id="dueDate" />
-    <br />
     <button id="addBtn" class="addBtn">Add</button>
-    <button id="showAll" class="filter-button">Show All</button>
-    <button id="showActive" class="filter-button">Show Active</button>
-    <button id="showCompleted" class="filter-button">Show Completed</button>
+    <br />
+    <button id="showAll" class="filter-button">All</button>
+    <button id="showActive" class="filter-button">Active</button>
+    <button id="showCompleted" class="filter-button">Completed</button>
 
     <ul id="taskList">
       <!-- JavaScriptでliを追加 -->
@@ -26,6 +26,10 @@
     <script>
       const taskInput = document.getElementById('taskInput');
       const taskList = document.getElementById('taskList');
+
+      // お天気情報の取得処理
+      let weatherList = [];
+      getWeather();
 
       // ボタンが押された時の処理を関数として記述。
       function addTask() {
@@ -81,6 +85,20 @@
         }
         // 日付欄を空欄にする
         dueDateInput.value = '';
+
+        // 天気データの追加
+        const weatherSpan = document.createElement('span');
+        weatherSpan.classList.add('weatherInfo');
+        // 天気データ表示テスト
+        // weatherSpan.textContent = '☀️ 20%';
+
+        if (dueDate) {
+          const matched = weatherList.find((item) => item.date === dueDate);
+          if (matched) {
+            weatherSpan.textContent = `${matched.emoji} ${matched.rain}%`;
+            rightDiv.appendChild(weatherSpan);
+          }
+        }
 
         // テキストを追加
         // li.appendChild(textSpan);
@@ -171,12 +189,11 @@
         updateFilterButtons('showCompleted');
       });
 
-      // お天気情報の取得処理
-      getWeather();
+      // お天気データのAPI取得
       async function getWeather() {
         const url =
-          // 'https://api.open-meteo.com/v1/forecast?latitude=34.6938&longitude=135.5011&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo';
-          'https://api.open-meteo.com/v1/forecast?latitude=53.3331&longitude=-6.2489&daily=weather_code,precipitation_probability_max&timezone=auto';
+          'https://api.open-meteo.com/v1/forecast?latitude=34.6938&longitude=135.5011&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo';
+        // 'https://api.open-meteo.com/v1/forecast?latitude=53.3331&longitude=-6.2489&daily=weather_code,precipitation_probability_max&timezone=auto';
 
         try {
           const response = await fetch(url);
@@ -187,10 +204,8 @@
           console.error('エラー内容:', error); // ← エラー詳細を確認
         }
       }
-
+      // お天気データの整形
       function editData(weatherData) {
-        const weatherList = [];
-
         weatherData.daily.time.forEach((date, i) => {
           const codes = weatherData.daily.weather_code[i];
           const rain = weatherData.daily.precipitation_probability_max[i];
