@@ -206,20 +206,28 @@
       }
       // お天気データの整形
       function editData(weatherData) {
-        weatherData.daily.time.forEach((date, i) => {
+        // weatherData.daily.time.forEach((date, i) => {
+        //   const codes = weatherData.daily.weather_code[i];
+        //   const rain = weatherData.daily.precipitation_probability_max[i];
+        //   const emoji = getWeatherEmoji(codes);
+
+        //   const weatherObj = {
+        //     date,
+        //     codes,
+        //     emoji,
+        //     rain,
+        //   };
+
+        //   weatherList.push(weatherObj);
+        // });
+        weatherList = weatherData.daily.time.map((date, i) => {
           const codes = weatherData.daily.weather_code[i];
           const rain = weatherData.daily.precipitation_probability_max[i];
           const emoji = getWeatherEmoji(codes);
 
-          const weatherObj = {
-            date,
-            codes,
-            emoji,
-            rain,
-          };
-
-          weatherList.push(weatherObj);
+          return { date, codes, emoji, rain };
         });
+
         console.log('整形後の天気データ:', weatherList);
         // console.log(JSON.stringify(weatherList, null, 2));
       }
