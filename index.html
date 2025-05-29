@@ -57,6 +57,8 @@
           } else {
             li.style.textDecoration = 'none';
           }
+          // LocalStorage保存
+          saveTasksToLocalStorage();
         });
 
         // チェックボックスを追加
@@ -112,6 +114,8 @@
         // デリート押下されたらリストから削除する
         dlButton.addEventListener('click', function () {
           li.remove();
+          // LocalStorage保存
+          saveTasksToLocalStorage();
         });
 
         // デリートボタンを追加
@@ -126,6 +130,9 @@
 
         // タスクを追加したときに入力欄へ自動でフォーカスを戻す
         taskInput.focus();
+
+        // LocalStorage保存
+        saveTasksToLocalStorage();
       }
 
       // Addボタン押下
@@ -258,6 +265,24 @@
         ];
         const match = emojiMap.find((entry) => entry.codes.includes(codes));
         return match ? match.emoji : '?';
+      }
+      // LocalStorage保存用関数
+      function saveTasksToLocalStorage() {
+        const allLis = document.querySelectorAll('#taskList li');
+        const taskData = [];
+        allLis.forEach((li) => {
+          const checkbox = li.querySelector('input[type="checkbox"]');
+          const text = li.querySelector('.left span').textContent;
+          const dueDateSpan = li.querySelector('.dueDate');
+          const dueDate = dueDateSpan
+            ? dueDateSpan.textContent.replace(/[（）〜]/g, '')
+            : '';
+          const isDone = checkbox.checked;
+
+          taskData.push({ text, dueDate, isDone });
+        });
+
+        localStorage.setItem('tasks', JSON.stringify(taskData));
       }
     </script>
   </body>
