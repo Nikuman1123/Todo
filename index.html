@@ -27,18 +27,26 @@
       const taskInput = document.getElementById('taskInput');
       const taskList = document.getElementById('taskList');
 
+      // 保存データの読み込み
+      document.addEventListener('DOMContentLoaded', () => {
+        restoreTasksFromLocalStorage();
+      });
+
       // お天気情報の取得処理
       let weatherList = [];
       getWeather();
 
       // ボタンが押された時の処理を関数として記述。
-      function addTask() {
-        let taskText = taskInput.value;
-        taskInput.value = '';
-
+      function addTask(
+        taskText = taskInput.value,
+        dueDate = document.getElementById('dueDate').value,
+        isDone = false
+      ) {
         if (taskText.trim() === '') {
           return; // 入力が空の場合は何もしない
         }
+        taskInput.value = '';
+        document.getElementById('dueDate').value = '';
 
         // liは左右でdivを分割、テキストはspanへ
         const li = document.createElement('li');
@@ -61,6 +69,9 @@
           saveTasksToLocalStorage();
         });
 
+        // 初期表示でも線を引く
+        li.style.textDecoration = isDone ? 'line-through' : 'none';
+
         // チェックボックスを追加
         leftDiv.appendChild(checkbox);
 
@@ -68,8 +79,8 @@
         textSpan.textContent = taskText;
 
         // 期限日付の取得とチェック
-        const dueDateInput = document.getElementById('dueDate');
-        const dueDate = dueDateInput.value;
+        // const dueDateInput = document.getElementById('dueDate');
+        // const dueDate = dueDateInput.value;
         if (dueDate !== '') {
           const dateObj = new Date(dueDate);
           const isValid = !isNaN(dateObj.getTime());
@@ -283,6 +294,25 @@
         });
 
         localStorage.setItem('tasks', JSON.stringify(taskData));
+      }
+
+      // 保存データの取得＆パース確認（まずはコンソールで確認）
+      const saved = localStorage.getItem('tasks');
+      if (saved) {
+        const taskArray = JSON.parse(saved);
+        console.log('復元データ：', taskArray);
+      }
+      // 復元関数を作る（タスクを1件ずつ再表示）
+      function restoreTasksFromLocalStorage() {
+        const saved = localStorage.getItem('tasks');
+        if (!saved) return;
+
+        const taskArray = JSON.parse(saved);
+        taskArray.forEach((item) => {
+          taskInput.value = item.text;
+          document.getElementById('dueDate').value = item.dueDate;
+          addTask(item.text, item.dueDate, item.isDone); // 既存のaddTask()を利用してUIを生成
+        });
       }
     </script>
   </body>
