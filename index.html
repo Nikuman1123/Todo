@@ -37,11 +37,11 @@
       getWeather();
 
       // ボタンが押された時の処理を関数として記述。
-      function addTask(
-        taskText = taskInput.value,
-        dueDate = document.getElementById('dueDate').value,
-        isDone = false
-      ) {
+      function addTask(taskTextArg, dueDateArg, isDone = false) {
+        const taskText =
+          typeof taskTextArg === 'string' ? taskTextArg : taskInput.value;
+        const dueDate = dueDateArg ?? document.getElementById('dueDate').value;
+
         if (taskText.trim() === '') {
           return; // 入力が空の場合は何もしない
         }
@@ -59,6 +59,7 @@
         // チェックボックスを設定
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.checked = isDone; // ← これを追加！
         checkbox.addEventListener('change', () => {
           if (checkbox.checked) {
             li.style.textDecoration = 'line-through';
@@ -97,7 +98,6 @@
           rightDiv.appendChild(dueDateSpan);
         }
         // 日付欄を空欄にする
-        dueDateInput.value = '';
 
         // 天気データの追加
         const weatherSpan = document.createElement('span');
