@@ -26,15 +26,18 @@
     <script>
       const taskInput = document.getElementById('taskInput');
       const taskList = document.getElementById('taskList');
+      let weatherList = [];
 
       // 保存データの読み込み
       document.addEventListener('DOMContentLoaded', () => {
-        restoreTasksFromLocalStorage();
+        getWeather().then(() => {
+          restoreTasksFromLocalStorage();
+        });
       });
 
-      // お天気情報の取得処理
-      let weatherList = [];
-      getWeather();
+      // // お天気情報の取得処理
+      // let weatherList = [];
+      // getWeather();
 
       // ボタンが押された時の処理を関数として記述。
       function addTask(taskTextArg, dueDateArg, isDone = false) {
@@ -90,27 +93,23 @@
             alert('正しい日付を入力してください');
             return;
           }
-          // 日付を表示に加える
+
+          // 天気データの追加
+          const weatherSpan = document.createElement('span');
+          weatherSpan.classList.add('weatherInfo');
+          if (dueDate) {
+            const matched = weatherList.find((item) => item.date === dueDate);
+            if (matched) {
+              weatherSpan.textContent = `${matched.emoji} ${matched.rain}%`;
+              rightDiv.appendChild(weatherSpan);
+            }
+          }
+
+          // 期限日を追加
           const dueDateSpan = document.createElement('span');
           dueDateSpan.classList.add('dueDate');
           dueDateSpan.textContent = `（〜${dueDate}）`;
-
           rightDiv.appendChild(dueDateSpan);
-        }
-        // 日付欄を空欄にする
-
-        // 天気データの追加
-        const weatherSpan = document.createElement('span');
-        weatherSpan.classList.add('weatherInfo');
-        // 天気データ表示テスト
-        // weatherSpan.textContent = '☀️ 20%';
-
-        if (dueDate) {
-          const matched = weatherList.find((item) => item.date === dueDate);
-          if (matched) {
-            weatherSpan.textContent = `${matched.emoji} ${matched.rain}%`;
-            rightDiv.appendChild(weatherSpan);
-          }
         }
 
         // テキストを追加
@@ -142,13 +141,19 @@
         // タスクを追加したときに入力欄へ自動でフォーカスを戻す
         taskInput.focus();
 
-        // LocalStorage保存
-        saveTasksToLocalStorage();
+        // // LocalStorage保存
+        // saveTasksToLocalStorage();
       }
 
       // Addボタン押下
       const addBtn = document.getElementById('addBtn');
-      addBtn.addEventListener('click', addTask);
+      // addBtn.addEventListener('click', addTask);
+      addBtn.addEventListener('click', () => {
+        addTask();
+        saveTasksToLocalStorage();
+        sortTasks('asc');
+      });
+      // sortTasks('asc');
 
       // 変換途中のエンター押下じゃないかチェック
       let isComposing = false;
@@ -163,6 +168,8 @@
       taskInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !isComposing) {
           addTask();
+          saveTasksToLocalStorage();
+          sortTasks('asc');
         }
       });
 
@@ -302,17 +309,42 @@
         const taskArray = JSON.parse(saved);
         console.log('復元データ：', taskArray);
       }
-      // 復元関数を作る（タスクを1件ずつ再表示）
+
+      // 復元関数を作る（タスクを再表示）
       function restoreTasksFromLocalStorage() {
         const saved = localStorage.getItem('tasks');
         if (!saved) return;
 
         const taskArray = JSON.parse(saved);
+        // dueDate を基準に日付昇順で並び替える
+        taskArray.sort((a, b) => new Date(a.dueDate) - b.dueDate);
+        renderTasks(taskArray);
+
+        // taskArray.forEach((item) => {
+        //   taskInput.value = item.text;
+        //   document.getElementById('dueDate').value = item.dueDate;
+        //   addTask(item.text, item.dueDate, item.isDone); // 既存のaddTask()を利用してUIを生成
+        // });
+      }
+
+      function renderTasks(taskArray) {
+        taskList.innerHTML = '';
         taskArray.forEach((item) => {
-          taskInput.value = item.text;
-          document.getElementById('dueDate').value = item.dueDate;
           addTask(item.text, item.dueDate, item.isDone); // 既存のaddTask()を利用してUIを生成
         });
+      }
+
+      function sortTasks(order = 'asc') {
+        const saved = localStorage.getItem('tasks');
+        if (!saved) return;
+
+        const taskArray = JSON.parse(saved);
+        if (order === 'asc') {
+          taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        } else {
+          taskArray.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+        }
+        renderTasks(taskArray);
       }
     </script>
   </body>
