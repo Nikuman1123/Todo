@@ -338,7 +338,7 @@
 
         const taskArray = JSON.parse(saved);
         // dueDate を基準に日付昇順で並び替える
-        taskArray.sort((a, b) => new Date(a.dueDate) - b.dueDate);
+        taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
         renderTasks(taskArray);
 
         // taskArray.forEach((item) => {
