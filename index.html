@@ -32,14 +32,14 @@
       // ダークモード対応
       const toggleBtn = document.getElementById('toggleTheme');
       toggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark');
+        // document.body.classList.toggle('dark');
 
         // モードの保存
-        const isDark = document.classList.contains('dark');
+        const isDark = document.body.classList.contains('dark');
         const nextTheme = isDark ? 'light' : 'dark';
 
-        body.classList.remove('light', 'dark');
-        body.classList.add(nextTheme);
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(nextTheme);
 
         localStorage.setItem('theme', nextTheme);
       });
