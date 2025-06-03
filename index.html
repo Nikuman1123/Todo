@@ -21,6 +21,7 @@
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
     <button id="showCompleted" class="filter-button">Completed</button>
+    <button id="clearCompleted" class="delete-btn">✔️完了タスクを全削除</button>
 
     <ul id="taskList">
       <!-- JavaScriptでliを追加 -->
@@ -29,6 +30,25 @@
       const taskInput = document.getElementById('taskInput');
       const taskList = document.getElementById('taskList');
       let weatherList = [];
+
+      // 完了済みのタスクをすべて削除
+      document
+        .getElementById('clearCompleted')
+        .addEventListener('click', () => {
+          const isConfirmed = confirm(
+            '完了済みのタスクを全て削除します。よろしいですか？'
+          );
+          if (!isConfirmed) return;
+
+          const allLis = document.querySelectorAll('#taskList li');
+          allLis.forEach((li) => {
+            const checkbox = li.querySelector('input[type="checkbox"]');
+            if (checkbox && checkbox.checked) {
+              li.remove();
+            }
+          });
+          saveTasksToLocalStorage();
+        });
 
       // ソート順切替
       let isAscending = true;
