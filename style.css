@@ -55,6 +55,14 @@ button:hover {
   background-color: #ffcc00;
 }
 
+.sort-button {
+  border-radius: 16px;
+}
+
+.sort-button:hover {
+  background-color: orange;
+}
+
 /* 区切り線、上下余白 */
 li {
   border-bottom: 1px solid #ccc;

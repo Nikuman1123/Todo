@@ -17,6 +17,7 @@
     <button id="addBtn" class="addBtn">Add</button>
     <button id="toggleTheme">☀️ / 🌙</button>
     <br />
+    <button id="toggleSort" class="sort-button">Sort by Date</button>
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
     <button id="showCompleted" class="filter-button">Completed</button>
@@ -28,6 +29,18 @@
       const taskInput = document.getElementById('taskInput');
       const taskList = document.getElementById('taskList');
       let weatherList = [];
+
+      // ソート順切替
+      let isAscending = true;
+      const toggleSortBtn = document.getElementById('toggleSort');
+      toggleSortBtn.addEventListener('click', () => {
+        isAscending = !isAscending; //状態を反転
+        const newOrder = isAscending ? 'asc' : 'desc';
+        // toggleSortBtn.textContent = `日付ソート：${
+        //   isAscending ? '昇順' : '降順'
+        // }`;
+        sortTasks(newOrder);
+      });
 
       // ダークモード対応
       const toggleBtn = document.getElementById('toggleTheme');
