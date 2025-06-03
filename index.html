@@ -77,11 +77,15 @@
         localStorage.setItem('theme', nextTheme);
       });
 
+      // ページロード時の動作
       // 保存データの読み込み
       document.addEventListener('DOMContentLoaded', () => {
         // テーマの復元
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.classList.add(savedTheme);
+
+        // フィルター初期化（Allボタンを選択状態にする）
+        updateFilterButtons('showAll');
 
         // タスク入力欄に自動フォーカス;
         taskInput.focus();
@@ -89,6 +93,7 @@
         // お天気とタスクの復元
         getWeather().then(() => {
           restoreTasksFromLocalStorage();
+          pressFilterButtons('all'); // ← 表示状態もAllにする
         });
       });
 
