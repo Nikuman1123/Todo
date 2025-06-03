@@ -63,6 +63,9 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.classList.add(savedTheme);
 
+        // タスク入力欄に自動フォーカス;
+        taskInput.focus();
+
         // お天気とタスクの復元
         getWeather().then(() => {
           restoreTasksFromLocalStorage();
