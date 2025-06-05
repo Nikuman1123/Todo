@@ -30,6 +30,7 @@
       const taskInput = document.getElementById('taskInput');
       const taskList = document.getElementById('taskList');
       let weatherList = [];
+      let hasRemoved = false;
 
       // 完了済みのタスクをすべて削除
       document
@@ -44,10 +45,24 @@
           allLis.forEach((li) => {
             const checkbox = li.querySelector('input[type="checkbox"]');
             if (checkbox && checkbox.checked) {
-              li.remove();
+              // アニメーションを加える
+              li.style.transition = 'opacity 0.3s ease';
+              li.style.opacity = 0;
+
+              // 0.3秒後に実際に削除
+              setTimeout(() => {
+                li.remove();
+                // 削除が1件でもあれば、保存をまとめて後で行う
+                hasRemoved = true;
+              }, 300);
             }
           });
-          saveTasksToLocalStorage();
+          // 最後にまとめて保存
+          setTimeout(() => {
+            if (hasRemoved) {
+              saveTasksToLocalStorage();
+            }
+          }, 350);
         });
 
       // ソート順切替
