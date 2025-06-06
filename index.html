@@ -28,9 +28,18 @@
     </ul>
     <script>
       const taskInput = document.getElementById('taskInput');
+      const dueDateInput = document.getElementById('dueDate');
       const taskList = document.getElementById('taskList');
       let weatherList = [];
       let hasRemoved = false;
+
+      // Escキーで入力をキャンセル
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          taskInput.value = '';
+          dueDateInput.value = '';
+        }
+      });
 
       // 完了済みのタスクをすべて削除
       document
