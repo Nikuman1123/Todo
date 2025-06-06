@@ -31,7 +31,27 @@
       const dueDateInput = document.getElementById('dueDate');
       const taskList = document.getElementById('taskList');
       let weatherList = [];
-      let hasRemoved = false;
+
+      // ページロード時の動作
+      // 保存データの読み込み
+      document.addEventListener('DOMContentLoaded', () => {
+        // テーマの復元
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.classList.add(savedTheme);
+
+        // フィルター初期化（Allボタンを選択状態にする）
+        updateFilterButtons('showAll');
+
+        // タスク入力欄に自動フォーカス;
+        taskInput.focus();
+
+        // お天気とタスクの復元
+        getWeather().then(() => {
+          restoreTasksFromLocalStorage();
+          pressFilterButtons('all'); // ← 表示状態もAllにする
+        });
+        sortTasks('asc');
+      });
 
       // Escキーで入力をキャンセル
       document.addEventListener('keydown', (e) => {
@@ -49,7 +69,7 @@
             '完了済みのタスクを全て削除します。よろしいですか？'
           );
           if (!isConfirmed) return;
-
+          let hasRemoved = false;
           const allLis = document.querySelectorAll('#taskList li');
           allLis.forEach((li) => {
             const checkbox = li.querySelector('input[type="checkbox"]');
@@ -89,8 +109,6 @@
       // ダークモード対応
       const toggleBtn = document.getElementById('toggleTheme');
       toggleBtn.addEventListener('click', () => {
-        // document.body.classList.toggle('dark');
-
         // モードの保存
         const isDark = document.body.classList.contains('dark');
         const nextTheme = isDark ? 'light' : 'dark';
@@ -101,29 +119,31 @@
         localStorage.setItem('theme', nextTheme);
       });
 
-      // ページロード時の動作
-      // 保存データの読み込み
-      document.addEventListener('DOMContentLoaded', () => {
-        // テーマの復元
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.classList.add(savedTheme);
-
-        // フィルター初期化（Allボタンを選択状態にする）
-        updateFilterButtons('showAll');
-
-        // タスク入力欄に自動フォーカス;
-        taskInput.focus();
-
-        // お天気とタスクの復元
-        getWeather().then(() => {
-          restoreTasksFromLocalStorage();
-          pressFilterButtons('all'); // ← 表示状態もAllにする
-        });
+      // Addボタン押下
+      const addBtn = document.getElementById('addBtn');
+      addBtn.addEventListener('click', () => {
+        addTask();
+        saveTasksToLocalStorage();
+        sortTasks('asc');
       });
 
-      // // お天気情報の取得処理
-      // let weatherList = [];
-      // getWeather();
+      // 変換途中のエンター押下じゃないかチェック
+      let isComposing = false;
+      taskInput.addEventListener('compositionstart', () => {
+        isComposing = true;
+      });
+      taskInput.addEventListener('compositionend', () => {
+        isComposing = false;
+      });
+
+      // 確定後のエンターキー押下を検知する
+      taskInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !isComposing) {
+          addTask();
+          saveTasksToLocalStorage();
+          sortTasks('asc');
+        }
+      });
 
       // ボタンが押された時の処理を関数として記述。
       function addTask(taskTextArg, dueDateArg, isDone = false) {
@@ -231,34 +251,6 @@
         // saveTasksToLocalStorage();
       }
 
-      // Addボタン押下
-      const addBtn = document.getElementById('addBtn');
-      // addBtn.addEventListener('click', addTask);
-      addBtn.addEventListener('click', () => {
-        addTask();
-        saveTasksToLocalStorage();
-        sortTasks('asc');
-      });
-      // sortTasks('asc');
-
-      // 変換途中のエンター押下じゃないかチェック
-      let isComposing = false;
-      taskInput.addEventListener('compositionstart', () => {
-        isComposing = true;
-      });
-      taskInput.addEventListener('compositionend', () => {
-        isComposing = false;
-      });
-
-      // 確定後のエンターキー押下を検知する
-      taskInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !isComposing) {
-          addTask();
-          saveTasksToLocalStorage();
-          sortTasks('asc');
-        }
-      });
-
       // フィルターボタンを押した時の動作
       function pressFilterButtons(filterType) {
         const allTask = document.querySelectorAll('#taskList li');
@@ -283,7 +275,7 @@
         activeBtn.classList.add('active');
       }
 
-      //押下されたフィルターボタン応じたパラメータを渡す
+      // ==== フィルターボタンのイベント登録 ==== //
       // 全表示
       document.getElementById('showAll').addEventListener('click', () => {
         pressFilterButtons('all');
@@ -389,19 +381,14 @@
         localStorage.setItem('tasks', JSON.stringify(taskData));
       }
 
-      // 保存データの取得＆パース確認（まずはコンソールで確認）
-      const saved = localStorage.getItem('tasks');
-      if (saved) {
-        const taskArray = JSON.parse(saved);
-        console.log('復元データ：', taskArray);
-      }
-
-      // 復元関数を作る（タスクを再表示）
+      // 復元関数（タスクを再表示）
       function restoreTasksFromLocalStorage() {
         const saved = localStorage.getItem('tasks');
         if (!saved) return;
 
         const taskArray = JSON.parse(saved);
+        // パース確認（まずはコンソールで確認）
+        console.log('復元データ：', taskArray);
         // dueDate を基準に日付昇順で並び替える
         taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
         renderTasks(taskArray);
