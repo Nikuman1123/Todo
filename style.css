@@ -111,3 +111,10 @@ li {
   /* 透明度下げ */
   opacity: 0.6;
 }
+
+/* 期限日の入力必須エラーのメッセージ */
+.error-message {
+  font-size: 14px;
+  margin-top: 8px;
+  color: crimson;
+}

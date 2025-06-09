@@ -17,6 +17,11 @@
     <button id="addBtn" class="addBtn">Add</button>
     <button id="toggleTheme">☀️ / 🌙</button>
     <br />
+    <p
+      id="errorMsg"
+      class="error-message"
+      style="color: crimson; display: none"
+    ></p>
     <button id="toggleSort" class="sort-button">Sort by Date</button>
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
@@ -151,6 +156,11 @@
           typeof taskTextArg === 'string' ? taskTextArg : taskInput.value;
         const dueDate = dueDateArg ?? document.getElementById('dueDate').value;
 
+        // 期限日の入力必須チェックを初期化
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = '';
+        errorMsg.style.display = 'none';
+
         if (taskText.trim() === '') {
           return; // 入力が空の場合は何もしない
         }
@@ -197,6 +207,12 @@
         textSpan.textContent = taskText;
 
         // 期限日付の取得とチェック
+        if (!dueDate) {
+          errorMsg.textContent = '⚠️ 期限日を入力してください';
+          errorMsg.style.display = 'block';
+          return;
+        }
+
         // const dueDateInput = document.getElementById('dueDate');
         // const dueDate = dueDateInput.value;
         if (dueDate !== '') {
