@@ -170,17 +170,25 @@
         checkbox.type = 'checkbox';
         checkbox.checked = isDone; // ← これを追加！
         checkbox.addEventListener('change', () => {
-          if (checkbox.checked) {
-            li.style.textDecoration = 'line-through';
-          } else {
-            li.style.textDecoration = 'none';
-          }
+          // if (checkbox.checked) {
+          //   li.style.textDecoration = 'line-through';
+          // } else {
+          //   li.style.textDecoration = 'none';
+          // }
+
+          // チェックした時の取り消し線をclassListで実現
+          li.classList.toggle('completed', checkbox.checked);
+
           // LocalStorage保存
           saveTasksToLocalStorage();
         });
 
         // 初期表示でも線を引く
-        li.style.textDecoration = isDone ? 'line-through' : 'none';
+        // li.style.textDecoration = isDone ? 'line-through' : 'none';
+        // classListを使用してチェック済みのリストを復元する
+        if (isDone) {
+          li.classList.add('completed');
+        }
 
         // チェックボックスを追加
         leftDiv.appendChild(checkbox);

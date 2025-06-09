@@ -103,3 +103,11 @@ li {
   font-size: 0.9em;
   color: gray;
 }
+
+/* リストに完了チェックを付けた時の変化 */
+.completed {
+  /* 取消線 */
+  text-decoration: line-through;
+  /* 透明度下げ */
+  opacity: 0.6;
+}
