@@ -118,3 +118,16 @@ li {
   margin-top: 8px;
   color: crimson;
 }
+
+/* 優先度に応じた書式 */
+.priority-high {
+  border-left: 4px solid crimson;
+  background-color: #ffecec;
+}
+
+/* .priority-high {  通常はデフォルト} */
+
+.priority-low {
+  border-left: 4px solid teal;
+  background-color: #f0f9ff;
+}

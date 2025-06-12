@@ -14,6 +14,11 @@
     <h1>ToDo</h1>
     <input type="text" id="taskInput" placeholder="タスクを入力" />
     <input type="date" id="dueDate" />
+    <select id="priority">
+      <option value="normal" selected>normal</option>
+      <option value="high">high</option>
+      <option value="low">low</option>
+    </select>
     <button id="addBtn" class="addBtn">Add</button>
     <button id="toggleTheme">☀️ / 🌙</button>
     <br />
@@ -151,7 +156,7 @@
       });
 
       // ボタンが押された時の処理を関数として記述。
-      function addTask(taskTextArg, dueDateArg, isDone = false) {
+      function addTask(taskTextArg, dueDateArg, isDone = false, priorityArg) {
         const taskText =
           typeof taskTextArg === 'string' ? taskTextArg : taskInput.value;
         const dueDate = dueDateArg ?? document.getElementById('dueDate').value;
@@ -174,6 +179,11 @@
         const rightDiv = document.createElement('div');
         rightDiv.classList.add('right');
         const textSpan = document.createElement('span');
+
+        // タスクの優先度を設定
+        const priorityInput = document.getElementById('priority');
+        const priority = priorityArg ?? priorityInput.value;
+        li.classList.add(`priority-${priority}`);
 
         // チェックボックスを設定
         const checkbox = document.createElement('input');
@@ -399,7 +409,15 @@
             : '';
           const isDone = checkbox.checked;
 
-          taskData.push({ text, dueDate, isDone });
+          // liそれぞれのclassListから優先度を抽出する
+          const priorityClass = Array.from(li.classList).find((cls) =>
+            cls.startsWith('priority-')
+          );
+          const priority = priorityClass
+            ? priorityClass.replace('priority-', '')
+            : 'normal';
+
+          taskData.push({ text, dueDate, isDone, priority });
         });
 
         localStorage.setItem('tasks', JSON.stringify(taskData));
@@ -427,7 +445,7 @@
       function renderTasks(taskArray) {
         taskList.innerHTML = '';
         taskArray.forEach((item) => {
-          addTask(item.text, item.dueDate, item.isDone); // 既存のaddTask()を利用してUIを生成
+          addTask(item.text, item.dueDate, item.isDone, item.priority); // 既存のaddTask()を利用してUIを生成
         });
       }
 
