@@ -131,3 +131,8 @@ li {
   border-left: 4px solid teal;
   background-color: #f0f9ff;
 }
+
+.fading {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}

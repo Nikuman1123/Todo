@@ -85,8 +85,9 @@
             const checkbox = li.querySelector('input[type="checkbox"]');
             if (checkbox && checkbox.checked) {
               // アニメーションを加える
-              li.style.transition = 'opacity 0.3s ease';
-              li.style.opacity = 0;
+              // li.style.transition = 'opacity 0.3s ease';
+              // li.style.opacity = 0;
+              li.classList.add('fading');
 
               // 0.3秒後に実際に削除
               setTimeout(() => {
