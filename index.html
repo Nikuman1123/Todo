@@ -264,9 +264,15 @@
 
         // デリート押下されたらリストから削除する
         dlButton.addEventListener('click', function () {
-          li.remove();
-          // LocalStorage保存
-          saveTasksToLocalStorage();
+          //  fadingクラスを付与してフェード開始
+          li.classList.add('fading');
+
+          // アニメーションが終わる0.3秒後に削除
+          setTimeout(() => {
+            li.remove();
+            // LocalStorage保存
+            saveTasksToLocalStorage();
+          }, 300);
         });
 
         // デリートボタンを追加
