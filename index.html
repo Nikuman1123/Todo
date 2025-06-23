@@ -31,7 +31,9 @@
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
     <button id="showCompleted" class="filter-button">Completed</button>
-    <button id="clearCompleted" class="delete-btn">Clear Completed</button>
+    <button id="clearCompleted" class="delete-btn" style="display: none">
+      Clear Completed
+    </button>
 
     <ul id="taskList">
       <!-- JavaScriptでliを追加 -->
@@ -40,6 +42,7 @@
       const taskInput = document.getElementById('taskInput');
       const dueDateInput = document.getElementById('dueDate');
       const taskList = document.getElementById('taskList');
+      const clearCompletedBtn = document.getElementById('clearCompleted');
       let weatherList = [];
 
       // ページロード時の動作
@@ -101,6 +104,8 @@
           setTimeout(() => {
             if (hasRemoved) {
               saveTasksToLocalStorage();
+              // Clear Completedボタンの表示設定
+              updateClearCompletedVisibility();
             }
           }, 350);
         });
@@ -202,6 +207,8 @@
 
           // LocalStorage保存
           saveTasksToLocalStorage();
+          // Clear Completedボタンの表示設定
+          updateClearCompletedVisibility();
         });
 
         // 初期表示でも線を引く
@@ -287,7 +294,8 @@
 
         // タスクを追加したときに入力欄へ自動でフォーカスを戻す
         taskInput.focus();
-
+        // Clear Completedボタンの表示設定
+        updateClearCompletedVisibility();
         // // LocalStorage保存
         // saveTasksToLocalStorage();
       }
@@ -441,6 +449,8 @@
         // dueDate を基準に日付昇順で並び替える
         taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
         renderTasks(taskArray);
+        // Clear Completedボタンの表示設定
+        updateClearCompletedVisibility();
 
         // taskArray.forEach((item) => {
         //   taskInput.value = item.text;
@@ -467,6 +477,17 @@
           taskArray.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
         }
         renderTasks(taskArray);
+      }
+
+      function updateClearCompletedVisibility() {
+        const completedTasks = document.querySelectorAll(
+          '#taskList li.completed'
+        );
+        if (completedTasks.length > 0) {
+          clearCompletedBtn.style.display = 'inline-block';
+        } else {
+          clearCompletedBtn.style.display = 'none';
+        }
       }
     </script>
   </body>
