@@ -84,25 +84,19 @@
           allLis.forEach((li) => {
             const checkbox = li.querySelector('input[type="checkbox"]');
             if (checkbox && checkbox.checked) {
-              // アニメーションを加える
-              // li.style.transition = 'opacity 0.3s ease';
-              // li.style.opacity = 0;
-              li.classList.add('fading');
-
+              // 削除時のアニメーションを加える
               // 0.3秒後に実際に削除
-              setTimeout(() => {
-                li.remove();
-                // 削除が1件でもあれば、保存をまとめて後で行う
-                hasRemoved = true;
-              }, 300);
+              fadeAndRemove(li);
+              hasRemoved = true;
             }
           });
+
           // 最後にまとめて保存
           setTimeout(() => {
             if (hasRemoved) {
               saveTasksToLocalStorage();
             }
-          }, 350);
+          }, 300);
         });
 
       // ソート順切替
@@ -264,15 +258,11 @@
 
         // デリート押下されたらリストから削除する
         dlButton.addEventListener('click', function () {
-          //  fadingクラスを付与してフェード開始
-          li.classList.add('fading');
-
-          // アニメーションが終わる0.3秒後に削除
-          setTimeout(() => {
-            li.remove();
+          //  fadingクラスを付与してフェード開始、アニメーションが終わる0.3秒後に削除
+          fadeAndRemove(li, () => {
             // LocalStorage保存
             saveTasksToLocalStorage();
-          }, 300);
+          });
         });
 
         // デリートボタンを追加
@@ -467,6 +457,16 @@
           taskArray.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
         }
         renderTasks(taskArray);
+      }
+
+      function fadeAndRemove(li, callbackAfterRemove) {
+        li.classList.add('fading');
+        setTimeout(() => {
+          li.remove();
+          if (typeof callbackAfterRemove === 'function') {
+            callbackAfterRemove();
+          }
+        }, 300);
       }
     </script>
   </body>
