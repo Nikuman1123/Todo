@@ -31,7 +31,7 @@
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
     <button id="showCompleted" class="filter-button">Completed</button>
-    <button id="clearCompleted" class="delete-btn" style="display: none">
+    <button id="clearCompleted" class="delete-btn hidden">
       Clear Completed
     </button>
 
@@ -484,10 +484,14 @@
           '#taskList li.completed'
         );
         if (completedTasks.length > 0) {
-          clearCompletedBtn.style.display = 'inline-block';
+          clearCompletedBtn.classList.remove('hidden');
         } else {
-          clearCompletedBtn.style.display = 'none';
+          clearCompletedBtn.classList.add('hidden');
         }
+        //   clearCompletedBtn.style.display = 'inline-block';
+        // } else {
+        //   clearCompletedBtn.style.display = 'none';
+        // }
       }
     </script>
   </body>
