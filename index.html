@@ -269,6 +269,8 @@
           fadeAndRemove(li, () => {
             // LocalStorage保存
             saveTasksToLocalStorage();
+            // Clear Completedボタンの表示設定
+            updateClearCompletedVisibility();
           });
         });
 
