@@ -132,7 +132,12 @@
       // Addボタン押下
       const addBtn = document.getElementById('addBtn');
       addBtn.addEventListener('click', () => {
-        addTask();
+        const taskText = taskInput.value;
+        const dueDate = dueDateInput.value;
+
+        if (!validateTaskInput(taskText, dueDate)) return;
+
+        addTask(undefined, undefined, false, undefined);
         saveTasksToLocalStorage();
         sortTasks('asc');
       });
@@ -149,7 +154,11 @@
       // 確定後のエンターキー押下を検知する
       taskInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !isComposing) {
-          addTask();
+          const taskText = taskInput.value;
+          const dueDate = dueDateInput.value;
+
+          if (!validateTaskInput(taskText, dueDate)) return;
+          addTask(undefined, undefined, false, undefined);
           saveTasksToLocalStorage();
           sortTasks('asc');
         }
@@ -159,12 +168,7 @@
       function addTask(taskTextArg, dueDateArg, isDone = false, priorityArg) {
         const taskText =
           typeof taskTextArg === 'string' ? taskTextArg : taskInput.value;
-        const dueDate = dueDateArg ?? document.getElementById('dueDate').value;
-
-        // 期限日の入力必須チェックを初期化
-        const errorMsg = document.getElementById('errorMsg');
-        errorMsg.textContent = '';
-        errorMsg.style.display = 'none';
+        const dueDate = dueDateArg || document.getElementById('dueDate').value;
 
         if (taskText.trim() === '') {
           return; // 入力が空の場合は何もしない
@@ -217,13 +221,6 @@
 
         // タスクのテキストを追加
         textSpan.textContent = taskText;
-
-        // 期限日付の取得とチェック
-        if (!dueDate) {
-          errorMsg.textContent = '⚠️ 期限日を入力してください';
-          errorMsg.style.display = 'block';
-          return;
-        }
 
         // const dueDateInput = document.getElementById('dueDate');
         // const dueDate = dueDateInput.value;
@@ -494,6 +491,21 @@
         // } else {
         //   clearCompletedBtn.style.display = 'none';
         // }
+      }
+
+      function validateTaskInput(taskText, dueDate) {
+        const errorMsg = document.getElementById('errorMsg');
+        // 期限日付の取得とチェック
+        if (!dueDate) {
+          errorMsg.textContent = '⚠️ 期限日を入力してください';
+          errorMsg.style.display = 'block';
+          return false;
+        }
+
+        // 期限日の入力必須チェックを初期化
+        errorMsg.textContent = '';
+        errorMsg.style.display = 'none';
+        return true;
       }
     </script>
   </body>
