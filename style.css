@@ -140,3 +140,10 @@ li {
 .hidden {
   display: none;
 }
+
+.fa-solid fa-house-user::before {
+  content: '\e1b0';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  padding: 0 7px 0 0;
+}

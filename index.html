@@ -9,6 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="all.css" />
   </head>
   <body>
     <h1>ToDo</h1>
@@ -31,6 +32,7 @@
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
     <button id="showCompleted" class="filter-button">Completed</button>
+    <i class="fa-solid fa-house-user"></i>
     <button id="clearCompleted" class="delete-btn hidden">
       Clear Completed
     </button>
@@ -105,14 +107,12 @@
         });
 
       // ソート順切替
-      let isAscending = true;
+      let isAscending = true; // 初期は昇順（true）
       const toggleSortBtn = document.getElementById('toggleSort');
       toggleSortBtn.addEventListener('click', () => {
         isAscending = !isAscending; //状態を反転
         const newOrder = isAscending ? 'asc' : 'desc';
-        // toggleSortBtn.textContent = `日付ソート：${
-        //   isAscending ? '昇順' : '降順'
-        // }`;
+        toggleSortBtn.textContent = `Sort by Date ${isAscending ? '↑' : '↓'}`;
         sortTasks(newOrder);
       });
 
