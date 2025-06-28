@@ -141,9 +141,19 @@ li {
   display: none;
 }
 
-.fa-solid fa-house-user::before {
-  content: '\e1b0';
+/* sort-buttonにFontAwesomeアイコンを擬似要素で付加 */
+.sort-button::after {
   font-family: 'Font Awesome 6 Free';
   font-weight: 900;
-  padding: 0 7px 0 0;
+  margin-left: 0.5em;
+}
+
+/* 昇順（↑） */
+.sort-asc::after {
+  content: '\f062'; /* fa-arrow-up */
+}
+
+/* 降順（↓） */
+.sort-desc::after {
+  content: '\f063'; /* fa-arrow-down */
 }

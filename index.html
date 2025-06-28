@@ -28,11 +28,10 @@
       class="error-message"
       style="color: crimson; display: none"
     ></p>
-    <button id="toggleSort" class="sort-button">Sort by Date</button>
+    <button id="toggleSort" class="sort-button sort-asc">Sort by Date</button>
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
     <button id="showCompleted" class="filter-button">Completed</button>
-    <i class="fa-solid fa-house-user"></i>
     <button id="clearCompleted" class="delete-btn hidden">
       Clear Completed
     </button>
@@ -112,7 +111,9 @@
       toggleSortBtn.addEventListener('click', () => {
         isAscending = !isAscending; //状態を反転
         const newOrder = isAscending ? 'asc' : 'desc';
-        toggleSortBtn.textContent = `Sort by Date ${isAscending ? '↑' : '↓'}`;
+        toggleSortBtn.classList.toggle('sort-asc', isAscending);
+        toggleSortBtn.classList.toggle('sort-desc', !isAscending);
+        // toggleSortBtn.textContent = `Sort by Date ${isAscending ? '↑' : '↓'}`;
         sortTasks(newOrder);
       });
 
