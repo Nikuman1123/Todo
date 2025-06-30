@@ -104,12 +104,14 @@ li {
   color: gray;
 }
 
-/* リストに完了チェックを付けた時の変化 */
-.completed {
+/* 完了タスクの見た目変更 */
+li.completed .taskText,
+li.completed .weatherInfo,
+li.completed .dueDate {
   /* 取消線 */
   text-decoration: line-through;
-  /* 透明度下げ */
-  opacity: 0.6;
+  /* 透明度薄く */
+  opacity: 0.5;
 }
 
 /* 期限日の入力必須エラーのメッセージ */

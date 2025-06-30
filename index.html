@@ -165,7 +165,7 @@
         }
       });
 
-      // ボタンが押された時の処理を関数として記述。
+      // ADDボタンが押された時の処理を関数として記述。
       function addTask(taskTextArg, dueDateArg, isDone = false, priorityArg) {
         const taskText =
           typeof taskTextArg === 'string' ? taskTextArg : taskInput.value;
@@ -221,6 +221,7 @@
         leftDiv.appendChild(checkbox);
 
         // タスクのテキストを追加
+        textSpan.classList.add('taskText');
         textSpan.textContent = taskText;
 
         // const dueDateInput = document.getElementById('dueDate');
