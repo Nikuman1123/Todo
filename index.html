@@ -9,7 +9,12 @@
       href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="all.css" />
+    <!-- Font Awesome CDN（v6） -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- <link rel="stylesheet" href="all.css" /> -->
   </head>
   <body>
     <h1>ToDo</h1>
@@ -45,6 +50,7 @@
       const taskList = document.getElementById('taskList');
       const clearCompletedBtn = document.getElementById('clearCompleted');
       let weatherList = [];
+      let currentFilterType = 'all'; //現在のフィルター状態保持
 
       // ページロード時の動作
       // 保存データの読み込み
@@ -322,16 +328,19 @@
       // ==== フィルターボタンのイベント登録 ==== //
       // 全表示
       document.getElementById('showAll').addEventListener('click', () => {
+        currentFilterType = 'all';
         pressFilterButtons('all');
         updateFilterButtons('showAll');
       });
       // 未完了
       document.getElementById('showActive').addEventListener('click', () => {
+        currentFilterType = 'active';
         pressFilterButtons('active');
         updateFilterButtons('showActive');
       });
       // 完了
       document.getElementById('showCompleted').addEventListener('click', () => {
+        currentFilterType = 'completed';
         pressFilterButtons('completed');
         updateFilterButtons('showCompleted');
       });
@@ -472,6 +481,9 @@
           taskArray.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
         }
         renderTasks(taskArray);
+
+        // フィルタを再適用
+        pressFilterButtons(currentFilterType);
       }
 
       function fadeAndRemove(li, callbackAfterRemove) {
