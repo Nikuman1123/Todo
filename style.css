@@ -159,3 +159,11 @@ li.completed .dueDate {
 .sort-desc::after {
   content: '\f063'; /* fa-arrow-down */
 }
+
+.task-visible {
+  display: flex;
+}
+
+.task-hidden {
+  display: none;
+}

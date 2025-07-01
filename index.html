@@ -98,9 +98,11 @@
             const checkbox = li.querySelector('input[type="checkbox"]');
             if (checkbox && checkbox.checked) {
               // 削除時のアニメーションを加える
-              // 0.3秒後に実際に削除
-              fadeAndRemove(li);
-              hasRemoved = true;
+              fadeAndRemove(li, () => {
+                // アニメーション完了前だが、削除処理は確定しているため、ここで hasRemoved を true にする
+                hasRemoved = true;
+                // 保存処理は下記のsetTimeout 後にまとめて行う
+              });
             }
           });
 
@@ -306,12 +308,20 @@
         const allTask = document.querySelectorAll('#taskList li');
         allTask.forEach((li) => {
           const checkbox = li.querySelector('input[type = checkbox]');
+          li.classList.remove('task-visible', 'task-hidden');
           if (filterType === 'all') {
-            li.style.display = 'flex';
+            // li.style.display = 'flex';
+            li.classList.add('task-visible');
           } else if (filterType === 'active') {
-            li.style.display = checkbox && checkbox.checked ? 'none' : 'flex';
+            // li.style.display = checkbox && checkbox.checked ? 'none' : 'flex';
+            li.classList.add(
+              checkbox && checkbox.checked ? 'task-hidden' : 'task-visible'
+            );
           } else if (filterType === 'completed') {
-            li.style.display = checkbox && checkbox.checked ? 'flex' : 'none';
+            // li.style.display = checkbox && checkbox.checked ? 'flex' : 'none';
+            li.classList.add(
+              checkbox && checkbox.checked ? 'task-visible' : 'task-hidden'
+            );
           }
         });
       }
