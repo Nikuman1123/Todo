@@ -27,6 +27,7 @@
     </select>
     <button id="addBtn" class="addBtn">Add</button>
     <button id="toggleTheme">☀️ / 🌙</button>
+    <button id="clearAll" class="delete-btn hidden">Clear All</button>
     <br />
     <p
       id="errorMsg"
@@ -84,6 +85,15 @@
         }
       });
 
+      document.getElementById('clearAll').addEventListener('click', () => {
+        const isConfirmed = confirm(
+          '本当にすべてのタスクを削除しますか？（テーマ設定は維持されます）'
+        );
+        if (!isConfirmed) return;
+
+        clearAllTaskAndSettings();
+      });
+
       // 完了済みのタスクをすべて削除
       document
         .getElementById('clearCompleted')
@@ -112,6 +122,8 @@
               saveTasksToLocalStorage();
               // Clear Completedボタンの表示設定
               updateClearCompletedVisibility();
+              // Clear Allボタンの表示設定
+              updateClearAllVisibility();
             }
           }, 300);
         });
@@ -282,6 +294,8 @@
             saveTasksToLocalStorage();
             // Clear Completedボタンの表示設定
             updateClearCompletedVisibility();
+            // Clear Allボタンの表示設定
+            updateClearAllVisibility();
           });
         });
 
@@ -299,6 +313,8 @@
         taskInput.focus();
         // Clear Completedボタンの表示設定
         updateClearCompletedVisibility();
+        // Clear Allボタンの表示設定
+        updateClearAllVisibility();
         // // LocalStorage保存
         // saveTasksToLocalStorage();
       }
@@ -465,6 +481,8 @@
         renderTasks(taskArray);
         // Clear Completedボタンの表示設定
         updateClearCompletedVisibility();
+        // Clear Allボタンの表示設定
+        updateClearAllVisibility();
 
         // taskArray.forEach((item) => {
         //   taskInput.value = item.text;
@@ -543,6 +561,46 @@
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
+      }
+
+      //全てのタスクを、表示とローカルストレージ両方から削除する
+      function clearAllTaskAndSettings() {
+        // タスクのみ localStorageから削除
+        localStorage.removeItem('tasks');
+        // 画面上のリストも全削除
+
+        const allLis = document.querySelectorAll('#taskList li');
+        let count = allLis.length;
+
+        allLis.forEach((li) => {
+          fadeAndRemove(li, () => {
+            count--;
+            if (count === 0) {
+              //完全に消えた後にUIリセット
+              // フィルター状態を初期化（全て表示に戻す）
+              currentFilterType = 'all';
+              pressFilterButtons('all');
+              updateFilterButtons('showAll');
+
+              // ボタンなどのUI調整
+              updateClearCompletedVisibility();
+              // Clear Allボタンの表示設定
+              updateClearAllVisibility();
+              //期限日入力を現在日付に戻す
+              dueDateInput.value = getTodayDate();
+            }
+          });
+        });
+      }
+
+      function updateClearAllVisibility() {
+        const allTask = document.querySelectorAll('#taskList li');
+        const clearAllBtn = document.getElementById('clearAll');
+        if (allTask.length > 0) {
+          clearAllBtn.classList.remove('hidden');
+        } else {
+          clearAllBtn.classList.add('hidden');
+        }
       }
     </script>
   </body>
