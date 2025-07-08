@@ -127,11 +127,22 @@ li.completed .dueDate {
   background-color: #ffecec;
 }
 
-/* .priority-high {  通常はデフォルト} */
-
 .priority-low {
   border-left: 4px solid teal;
   background-color: #f0f9ff;
+}
+
+/* 優先度に応じた書式：ダークモード用 */
+body.dark .priority-high {
+  border-left: 4px solid crimson;
+  background-color: #3b1c1c; /* (濃い赤系) */
+  color: #ffcccc; /* やや薄い赤系テキスト */
+}
+
+body.dark .priority-low {
+  border-left: 4px solid teal;
+  background-color: #163540; /* (濃い青系) */
+  color: #b0dfff; /* 薄めの青テキスト */
 }
 
 .fading {
