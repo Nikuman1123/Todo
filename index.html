@@ -18,22 +18,29 @@
   </head>
   <body>
     <h1>ToDo</h1>
+
+    <div id="errorBanner" class="error-banner" style="display: none"></div>
+
     <input type="text" id="taskInput" placeholder="タスクを入力" />
     <input type="date" id="dueDate" />
+
     <select id="priority">
       <option value="normal" selected>Normal</option>
       <option value="high">High</option>
       <option value="low">Low</option>
     </select>
+
     <button id="addBtn" class="addBtn">Add</button>
     <button id="toggleTheme">☀️ / 🌙</button>
     <button id="clearAll" class="delete-btn hidden">Clear All</button>
     <br />
+
     <p
       id="errorMsg"
       class="error-message"
       style="color: crimson; display: none"
     ></p>
+
     <button id="toggleSort" class="sort-button sort-asc">Sort by Date</button>
     <button id="showAll" class="filter-button">All</button>
     <button id="showActive" class="filter-button">Active</button>
@@ -45,6 +52,7 @@
     <ul id="taskList">
       <!-- JavaScriptでliを追加 -->
     </ul>
+
     <script>
       const taskInput = document.getElementById('taskInput');
       const dueDateInput = document.getElementById('dueDate');
@@ -384,8 +392,21 @@
           editData(weatherData);
         } catch (error) {
           console.error('エラー内容:', error); // ← エラー詳細を確認
+          showErrorBanner(
+            '天気データの取得に失敗しました。しばらくして再度お試しください。（クリックで非表示）'
+          );
         }
       }
+      // エラーはクリックで即時非表示にする（ユーザーが閉じる動作）
+      document.getElementById('errorBanner').addEventListener('click', () => {
+        const banner = document.getElementById('errorBanner');
+        banner.classList.remove('show');
+        setTimeout(() => {
+          banner.style.display = 'none';
+          banner.textContent = ''; // 内容クリア（任意）
+        }, 500);
+      });
+
       // お天気データの整形
       function editData(weatherData) {
         // weatherData.daily.time.forEach((date, i) => {
@@ -601,6 +622,22 @@
         } else {
           clearAllBtn.classList.add('hidden');
         }
+      }
+
+      function showErrorBanner(message) {
+        const banner = document.getElementById('errorBanner');
+        banner.textContent = message;
+        banner.style.display = 'block';
+        banner.classList.add('show');
+
+        // 一定時間後に非表示（5秒）
+        setTimeout(() => {
+          banner.classList.remove('show');
+          setTimeout(() => {
+            banner.style.display = 'none';
+            banner.textContent = ''; // 内容クリア（任意）
+          }, 500); // アニメーション完了まで待つ
+        }, 5000);
       }
     </script>
   </body>
