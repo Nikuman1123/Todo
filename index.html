@@ -256,6 +256,9 @@
         textSpan.classList.add('taskText');
         textSpan.textContent = taskText;
 
+        // 編集機能を割り当てる
+        enableEditing(textSpan);
+
         // const dueDateInput = document.getElementById('dueDate');
         // const dueDate = dueDateInput.value;
         if (dueDate !== '') {
@@ -638,6 +641,92 @@
             banner.textContent = ''; // 内容クリア（任意）
           }, 500); // アニメーション完了まで待つ
         }, 5000);
+      }
+      function enableEditing(taskTextSpan) {
+        taskTextSpan.addEventListener('dblclick', () => {
+          const originalText = taskTextSpan.textContent;
+          const li = taskTextSpan.closest('li');
+          // 編集用input
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.value = originalText;
+          input.className = 'taskEditInput';
+
+          // Saveボタン
+          const saveButton = document.createElement('button');
+          saveButton.textContent = '💾';
+          saveButton.className = 'editSaveBtn';
+
+          // Cancelボタン
+          const cancelButton = document.createElement('button');
+          cancelButton.textContent = '❌';
+          cancelButton.className = 'editCancelBtn';
+
+          // 編集UIをまとめるコンテナ
+          const editContainer = document.createElement('div');
+          editContainer.className = 'editContainer';
+          editContainer.appendChild(input);
+          editContainer.appendChild(saveButton);
+          editContainer.appendChild(cancelButton);
+
+          // spanをUIコンテナに置き換える
+          taskTextSpan.style.display = 'none';
+          li.querySelector('.left').appendChild(editContainer);
+          input.focus();
+
+          // 日本語変換中の開始と終了を検知
+          let isComposing = false;
+          input.addEventListener('compositionstart', () => {
+            isComposing = true;
+          });
+          input.addEventListener('compositionend', () => {
+            isComposing = false;
+          });
+
+          // Save：編集確定（mousedownでフォーカス喪失を防ぐ）
+          saveButton.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            applyEdit();
+          });
+
+          // Cancel：編集キャンセル
+          cancelButton.addEventListener('click', () => {
+            // 編集UIを削除して元に戻す
+            input.remove();
+            saveButton.remove();
+            cancelButton.remove();
+            taskTextSpan.style.display = '';
+          });
+
+          // 編集確定（enter key）・キャンセル（Escキー）
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !isComposing) {
+              e.preventDefault();
+              applyEdit();
+            }
+            if (e.key === 'Escape') {
+              cancelButton.click();
+            }
+          });
+
+          // フォーカスが外れた時もキャンセル（IME中でなければ）
+          input.addEventListener('blur', () => {
+            if (!isComposing) cancelButton.click();
+          });
+
+          // 編集確定処理関数
+          function applyEdit() {
+            const newText = input.value;
+            taskTextSpan.textContent = newText;
+            saveTasksToLocalStorage();
+
+            // 編集UIを削除、元に戻す
+            if (input.parentNode) input.remove();
+            if (saveButton.parentNode) saveButton.remove();
+            if (cancelButton.parentNode) cancelButton.remove();
+            taskTextSpan.style.display = '';
+          }
+        });
       }
     </script>
   </body>

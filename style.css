@@ -199,3 +199,34 @@ body.dark .priority-low {
   display: block;
   opacity: 1;
 }
+
+.taskEditInput {
+  font-size: 18px;
+  padding: 4px 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.editContainer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.editSaveBtn,
+.editCancelBtn {
+  font-size: 1rem;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.editSaveBtn {
+  background-color: teal;
+  color: white;
+}
+
+.editCancelBtn {
+  background-color: lightGray;
+  color: black;
+}
