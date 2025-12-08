@@ -13,7 +13,10 @@
 </head>
 
 <body>
-  <h1>ToDo</h1>
+  <header class="app-header">
+    <h1>ToDo</h1>
+    <button id="toggleTheme" class="theme-btn">🐦‍⬛</button>
+  </header>
 
   <div id="errorBanner" class="error-banner" style="display: none"></div>
 
@@ -29,7 +32,8 @@
   <button id="addBtn" class="addBtn">Add</button>
   <button id="clearAll" class="delete-btn hidden">Clear All</button>
   <!-- <button id="toggleTheme">☀️ / 🌙</button> -->
-  <button id="toggleTheme">Dark / Light</button>
+  <!-- <button id="toggleTheme">Dark / Light</button> -->
+
   <br />
   <!-- 今日と明日の天気を表示 -->
   <div class="weather-summary">
@@ -65,6 +69,9 @@
       // テーマの復元
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.body.classList.add(savedTheme);
+
+      // ★ アイコンも合わせて復元
+      toggleBtn.textContent = savedTheme === 'dark' ? '💡' : '🐦‍⬛';
 
       // フィルター初期化（Allボタンを選択状態にする）
       updateFilterButtons('showAll');
@@ -157,6 +164,9 @@
       document.body.classList.add(nextTheme);
 
       localStorage.setItem('theme', nextTheme);
+
+      // ★ ボタンアイコン切り替え（ここだけ追加）
+      toggleBtn.textContent = nextTheme === 'dark' ? '💡' : '🐦‍⬛';
     });
 
     // Addボタン押下
