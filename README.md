@@ -2,10 +2,12 @@
 
 ## 📝 概要 / Overview
 
+<!-- markdownlint-disable MD033 -->
 <p align="center">
   <img src="docs/demo_light.png" alt="ライトモード" width="45%" style="margin-right:10px;">
   <img src="docs/demo_dark.png" alt="ダークモード" width="45%">
 </p>
+<!-- markdownlint-disable MD033 -->
 
 これは、カジュアルに使えるシンプルな ToDo リストアプリです。ブラウザ上で完結し、リロード後も入力内容が保存されます。
 This is a simple and casual ToDo list app. All tasks are saved locally and remain available even after reloading the browser.
