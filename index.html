@@ -1,733 +1,741 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>ToDoApp</title>
-    <link rel="stylesheet" href="style.css" />
-    <!-- M PLUS Rounded 1cを設定する -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Font Awesome CDN（v6） -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <!-- <link rel="stylesheet" href="all.css" /> -->
-  </head>
-  <body>
-    <h1>ToDo</h1>
 
-    <div id="errorBanner" class="error-banner" style="display: none"></div>
+<head>
+  <meta charset="UTF-8" />
+  <title>ToDoApp</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- M PLUS Rounded 1cを設定する -->
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet" />
+  <!-- Font Awesome CDN（v6） -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- <link rel="stylesheet" href="all.css" /> -->
+</head>
 
-    <input type="text" id="taskInput" placeholder="タスクを入力" />
-    <input type="date" id="dueDate" />
+<body>
+  <h1>ToDo</h1>
 
-    <select id="priority">
-      <option value="normal" selected>Normal</option>
-      <option value="high">High</option>
-      <option value="low">Low</option>
-    </select>
+  <div id="errorBanner" class="error-banner" style="display: none"></div>
 
-    <button id="addBtn" class="addBtn">Add</button>
-    <button id="toggleTheme">☀️ / 🌙</button>
-    <button id="clearAll" class="delete-btn hidden">Clear All</button>
-    <br />
+  <input type="text" id="taskInput" placeholder="タスクを入力" />
+  <input type="date" id="dueDate" />
 
-    <p
-      id="errorMsg"
-      class="error-message"
-      style="color: crimson; display: none"
-    ></p>
+  <select id="priority">
+    <option value="normal" selected>Normal</option>
+    <option value="high">High</option>
+    <option value="low">Low</option>
+  </select>
 
-    <button id="toggleSort" class="sort-button sort-asc">Sort by Date</button>
-    <button id="showAll" class="filter-button">All</button>
-    <button id="showActive" class="filter-button">Active</button>
-    <button id="showCompleted" class="filter-button">Completed</button>
-    <button id="clearCompleted" class="delete-btn hidden">
-      Clear Completed
-    </button>
+  <button id="addBtn" class="addBtn">Add</button>
+  <button id="clearAll" class="delete-btn hidden">Clear All</button>
+  <!-- <button id="toggleTheme">☀️ / 🌙</button> -->
+  <button id="toggleTheme">Dark / Light</button>
+  <br />
+  <!-- 今日と明日の天気を表示 -->
+  <div class="weather-summary">
+    <span class="weather-label">Today:</span>
+    <span id="todayWeather" class="weather-icon">--</span>
+    <span class="weather-label">Tomorrow:</span>
+    <span id="tomorrowWeather" class="weather-icon">--</span>
+  </div>
+  <br>
+  <p id="errorMsg" class="error-message" style="color: crimson; display: none"></p>
 
-    <ul id="taskList">
-      <!-- JavaScriptでliを追加 -->
-    </ul>
+  <button id="toggleSort" class="sort-button sort-asc">Sort by Date</button>
+  <button id="showAll" class="filter-button">All</button>
+  <button id="showActive" class="filter-button">Active</button>
+  <button id="showCompleted" class="filter-button">Completed</button>
+  <button id="clearCompleted" class="delete-btn hidden">Clear Completed</button>
 
-    <script>
-      const taskInput = document.getElementById('taskInput');
-      const dueDateInput = document.getElementById('dueDate');
-      const taskList = document.getElementById('taskList');
-      const clearCompletedBtn = document.getElementById('clearCompleted');
-      let weatherList = [];
-      let currentFilterType = 'all'; //現在のフィルター状態保持
+  <ul id="taskList">
+    <!-- JavaScriptでliを追加 -->
+  </ul>
 
-      // ページロード時の動作
-      // 保存データの読み込み
-      document.addEventListener('DOMContentLoaded', () => {
-        // テーマの復元
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.classList.add(savedTheme);
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const dueDateInput = document.getElementById('dueDate');
+    const taskList = document.getElementById('taskList');
+    const clearCompletedBtn = document.getElementById('clearCompleted');
+    let weatherList = [];
+    let currentFilterType = 'all'; //現在のフィルター状態保持
 
-        // フィルター初期化（Allボタンを選択状態にする）
-        updateFilterButtons('showAll');
+    // ページロード時の動作
+    // 保存データの読み込み
+    document.addEventListener('DOMContentLoaded', () => {
+      // テーマの復元
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.body.classList.add(savedTheme);
 
-        // タスク入力欄に自動フォーカス;
-        taskInput.focus();
+      // フィルター初期化（Allボタンを選択状態にする）
+      updateFilterButtons('showAll');
 
-        // お天気とタスクの復元
-        getWeather().then(() => {
-          restoreTasksFromLocalStorage();
-          pressFilterButtons('all'); // ← 表示状態もAllにする
-        });
-        sortTasks('asc');
+      // タスク入力欄に自動フォーカス;
+      taskInput.focus();
 
-        // デフォルトで現在日付をセットする
-        dueDateInput.value = getTodayDate();
+      // お天気とタスクの復元
+      getWeather().then(() => {
+        restoreTasksFromLocalStorage();
+        pressFilterButtons('all'); // ← 表示状態もAllにする
       });
+      sortTasks('asc');
 
-      // Escキーで入力をキャンセル
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          taskInput.value = '';
-          dueDateInput.value = '';
-        }
-      });
+      // デフォルトで現在日付をセットする
+      dueDateInput.value = getTodayDate();
+    });
 
-      document.getElementById('clearAll').addEventListener('click', () => {
+    // Escキーで入力をキャンセル
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        taskInput.value = '';
+        dueDateInput.value = '';
+      }
+    });
+
+    document.getElementById('clearAll').addEventListener('click', () => {
+      const isConfirmed = confirm(
+        '本当にすべてのタスクを削除しますか？（テーマ設定は維持されます）'
+      );
+      if (!isConfirmed) return;
+
+      clearAllTaskAndSettings();
+    });
+
+    // 完了済みのタスクをすべて削除
+    document
+      .getElementById('clearCompleted')
+      .addEventListener('click', () => {
         const isConfirmed = confirm(
-          '本当にすべてのタスクを削除しますか？（テーマ設定は維持されます）'
+          '完了済みのタスクを全て削除します。よろしいですか？'
         );
         if (!isConfirmed) return;
-
-        clearAllTaskAndSettings();
-      });
-
-      // 完了済みのタスクをすべて削除
-      document
-        .getElementById('clearCompleted')
-        .addEventListener('click', () => {
-          const isConfirmed = confirm(
-            '完了済みのタスクを全て削除します。よろしいですか？'
-          );
-          if (!isConfirmed) return;
-          let hasRemoved = false;
-          const allLis = document.querySelectorAll('#taskList li');
-          allLis.forEach((li) => {
-            const checkbox = li.querySelector('input[type="checkbox"]');
-            if (checkbox && checkbox.checked) {
-              // 削除時のアニメーションを加える
-              fadeAndRemove(li, () => {
-                // アニメーション完了前だが、削除処理は確定しているため、ここで hasRemoved を true にする
-                hasRemoved = true;
-                // 保存処理は下記のsetTimeout 後にまとめて行う
-              });
-            }
-          });
-
-          // 最後にまとめて保存
-          setTimeout(() => {
-            if (hasRemoved) {
-              saveTasksToLocalStorage();
-              // Clear Completedボタンの表示設定
-              updateClearCompletedVisibility();
-              // Clear Allボタンの表示設定
-              updateClearAllVisibility();
-            }
-          }, 300);
+        let hasRemoved = false;
+        const allLis = document.querySelectorAll('#taskList li');
+        allLis.forEach((li) => {
+          const checkbox = li.querySelector('input[type="checkbox"]');
+          if (checkbox && checkbox.checked) {
+            // 削除時のアニメーションを加える
+            fadeAndRemove(li, () => {
+              // アニメーション完了前だが、削除処理は確定しているため、ここで hasRemoved を true にする
+              hasRemoved = true;
+              // 保存処理は下記のsetTimeout 後にまとめて行う
+            });
+          }
         });
 
-      // ソート順切替
-      let isAscending = true; // 初期は昇順（true）
-      const toggleSortBtn = document.getElementById('toggleSort');
-      toggleSortBtn.addEventListener('click', () => {
-        isAscending = !isAscending; //状態を反転
-        const newOrder = isAscending ? 'asc' : 'desc';
-        toggleSortBtn.classList.toggle('sort-asc', isAscending);
-        toggleSortBtn.classList.toggle('sort-desc', !isAscending);
-        // toggleSortBtn.textContent = `Sort by Date ${isAscending ? '↑' : '↓'}`;
-        sortTasks(newOrder);
-      });
-
-      // ダークモード対応
-      const toggleBtn = document.getElementById('toggleTheme');
-      toggleBtn.addEventListener('click', () => {
-        // モードの保存
-        const isDark = document.body.classList.contains('dark');
-        const nextTheme = isDark ? 'light' : 'dark';
-
-        document.body.classList.remove('light', 'dark');
-        document.body.classList.add(nextTheme);
-
-        localStorage.setItem('theme', nextTheme);
-      });
-
-      // Addボタン押下
-      const addBtn = document.getElementById('addBtn');
-      addBtn.addEventListener('click', () => {
-        const taskText = taskInput.value;
-        const dueDate = dueDateInput.value;
-
-        if (!validateTaskInput(taskText, dueDate)) return;
-
-        addTask(undefined, undefined, false, undefined);
-        saveTasksToLocalStorage();
-        sortTasks('asc');
-      });
-
-      // 変換途中のエンター押下じゃないかチェック
-      let isComposing = false;
-      taskInput.addEventListener('compositionstart', () => {
-        isComposing = true;
-      });
-      taskInput.addEventListener('compositionend', () => {
-        isComposing = false;
-      });
-
-      // 確定後のエンターキー押下を検知する
-      taskInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !isComposing) {
-          const taskText = taskInput.value;
-          const dueDate = dueDateInput.value;
-
-          if (!validateTaskInput(taskText, dueDate)) return;
-          addTask(undefined, undefined, false, undefined);
-          saveTasksToLocalStorage();
-          sortTasks('asc');
-        }
-      });
-
-      // ADDボタンが押された時の処理を関数として記述。
-      function addTask(taskTextArg, dueDateArg, isDone = false, priorityArg) {
-        const taskText =
-          typeof taskTextArg === 'string' ? taskTextArg : taskInput.value;
-        const dueDate = dueDateArg || document.getElementById('dueDate').value;
-
-        if (taskText.trim() === '') {
-          return; // 入力が空の場合は何もしない
-        }
-        taskInput.value = '';
-        // デフォルトで現在日付をセットするため、期限日のリセットを削除
-        // document.getElementById('dueDate').value = '';
-
-        // liは左右でdivを分割、テキストはspanへ
-        const li = document.createElement('li');
-        const leftDiv = document.createElement('div');
-        leftDiv.classList.add('left');
-        const rightDiv = document.createElement('div');
-        rightDiv.classList.add('right');
-        const textSpan = document.createElement('span');
-
-        // タスクの優先度を設定
-        const priorityInput = document.getElementById('priority');
-        const priority = priorityArg ?? priorityInput.value;
-        li.classList.add(`priority-${priority}`);
-
-        // チェックボックスを設定
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = isDone; // ← これを追加！
-        checkbox.addEventListener('change', () => {
-          // if (checkbox.checked) {
-          //   li.style.textDecoration = 'line-through';
-          // } else {
-          //   li.style.textDecoration = 'none';
-          // }
-
-          // チェックした時の取り消し線をclassListで実現
-          li.classList.toggle('completed', checkbox.checked);
-
-          // LocalStorage保存
-          saveTasksToLocalStorage();
-          // Clear Completedボタンの表示設定
-          updateClearCompletedVisibility();
-        });
-
-        // 初期表示でも線を引く
-        // li.style.textDecoration = isDone ? 'line-through' : 'none';
-        // classListを使用してチェック済みのリストを復元する
-        if (isDone) {
-          li.classList.add('completed');
-        }
-
-        // チェックボックスを追加
-        leftDiv.appendChild(checkbox);
-
-        // タスクのテキストを追加
-        textSpan.classList.add('taskText');
-        textSpan.textContent = taskText;
-
-        // 編集機能を割り当てる
-        enableEditing(textSpan);
-
-        // const dueDateInput = document.getElementById('dueDate');
-        // const dueDate = dueDateInput.value;
-        if (dueDate !== '') {
-          const dateObj = new Date(dueDate);
-          const isValid = !isNaN(dateObj.getTime());
-
-          if (!isValid) {
-            alert('正しい日付を入力してください');
-            return;
-          }
-
-          // 天気データの追加
-          const weatherSpan = document.createElement('span');
-          weatherSpan.classList.add('weatherInfo');
-          if (dueDate) {
-            const matched = weatherList.find((item) => item.date === dueDate);
-            if (matched) {
-              weatherSpan.textContent = `${matched.emoji} ${matched.rain}%`;
-              rightDiv.appendChild(weatherSpan);
-            }
-          }
-
-          // 期限日を追加
-          const dueDateSpan = document.createElement('span');
-          dueDateSpan.classList.add('dueDate');
-          dueDateSpan.textContent = `（〜${dueDate}）`;
-          rightDiv.appendChild(dueDateSpan);
-        }
-
-        // テキストを追加
-        // li.appendChild(textSpan);
-        leftDiv.appendChild(textSpan);
-
-        // デリートボタンの設定
-        const dlButton = document.createElement('button');
-        dlButton.classList.add('delete-btn');
-        dlButton.textContent = 'del';
-
-        // デリート押下されたらリストから削除する
-        dlButton.addEventListener('click', function () {
-          //  fadingクラスを付与してフェード開始、アニメーションが終わる0.3秒後に削除
-          fadeAndRemove(li, () => {
-            // LocalStorage保存
+        // 最後にまとめて保存
+        setTimeout(() => {
+          if (hasRemoved) {
             saveTasksToLocalStorage();
             // Clear Completedボタンの表示設定
             updateClearCompletedVisibility();
             // Clear Allボタンの表示設定
             updateClearAllVisibility();
-          });
-        });
+          }
+        }, 300);
+      });
 
-        // デリートボタンを追加
-        rightDiv.appendChild(dlButton);
+    // ソート順切替
+    let isAscending = true; // 初期は昇順（true）
+    const toggleSortBtn = document.getElementById('toggleSort');
+    toggleSortBtn.addEventListener('click', () => {
+      isAscending = !isAscending; //状態を反転
+      const newOrder = isAscending ? 'asc' : 'desc';
+      toggleSortBtn.classList.toggle('sort-asc', isAscending);
+      toggleSortBtn.classList.toggle('sort-desc', !isAscending);
+      // toggleSortBtn.textContent = `Sort by Date ${isAscending ? '↑' : '↓'}`;
+      sortTasks(newOrder);
+    });
 
-        // leftDivとrightDivをliに追加
-        li.appendChild(leftDiv);
-        li.appendChild(rightDiv);
+    // ダークモード対応
+    const toggleBtn = document.getElementById('toggleTheme');
+    toggleBtn.addEventListener('click', () => {
+      // モードの保存
+      const isDark = document.body.classList.contains('dark');
+      const nextTheme = isDark ? 'light' : 'dark';
 
-        // タスクリストとして追加
-        taskList.appendChild(li);
+      document.body.classList.remove('light', 'dark');
+      document.body.classList.add(nextTheme);
 
-        // タスクを追加したときに入力欄へ自動でフォーカスを戻す
-        taskInput.focus();
+      localStorage.setItem('theme', nextTheme);
+    });
+
+    // Addボタン押下
+    const addBtn = document.getElementById('addBtn');
+    addBtn.addEventListener('click', () => {
+      const taskText = taskInput.value;
+      const dueDate = dueDateInput.value;
+
+      if (!validateTaskInput(taskText, dueDate)) return;
+
+      addTask(undefined, undefined, false, undefined);
+      saveTasksToLocalStorage();
+      sortTasks('asc');
+    });
+
+    // 変換途中のエンター押下じゃないかチェック
+    let isComposing = false;
+    taskInput.addEventListener('compositionstart', () => {
+      isComposing = true;
+    });
+    taskInput.addEventListener('compositionend', () => {
+      isComposing = false;
+    });
+
+    // 確定後のエンターキー押下を検知する
+    taskInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !isComposing) {
+        const taskText = taskInput.value;
+        const dueDate = dueDateInput.value;
+
+        if (!validateTaskInput(taskText, dueDate)) return;
+        addTask(undefined, undefined, false, undefined);
+        saveTasksToLocalStorage();
+        sortTasks('asc');
+      }
+    });
+
+    // ADDボタンが押された時の処理を関数として記述。
+    function addTask(taskTextArg, dueDateArg, isDone = false, priorityArg) {
+      const taskText =
+        typeof taskTextArg === 'string' ? taskTextArg : taskInput.value;
+      const dueDate = dueDateArg || document.getElementById('dueDate').value;
+
+      if (taskText.trim() === '') {
+        return; // 入力が空の場合は何もしない
+      }
+      taskInput.value = '';
+      // デフォルトで現在日付をセットするため、期限日のリセットを削除
+      // document.getElementById('dueDate').value = '';
+
+      // liは左右でdivを分割、テキストはspanへ
+      const li = document.createElement('li');
+      const leftDiv = document.createElement('div');
+      leftDiv.classList.add('left');
+      const rightDiv = document.createElement('div');
+      rightDiv.classList.add('right');
+      const textSpan = document.createElement('span');
+
+      // タスクの優先度を設定
+      const priorityInput = document.getElementById('priority');
+      const priority = priorityArg ?? priorityInput.value;
+      li.classList.add(`priority-${priority}`);
+
+      // チェックボックスを設定
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = isDone; // ← これを追加！
+      checkbox.addEventListener('change', () => {
+        // if (checkbox.checked) {
+        //   li.style.textDecoration = 'line-through';
+        // } else {
+        //   li.style.textDecoration = 'none';
+        // }
+
+        // チェックした時の取り消し線をclassListで実現
+        li.classList.toggle('completed', checkbox.checked);
+
+        // LocalStorage保存
+        saveTasksToLocalStorage();
         // Clear Completedボタンの表示設定
         updateClearCompletedVisibility();
-        // Clear Allボタンの表示設定
-        updateClearAllVisibility();
-        // // LocalStorage保存
-        // saveTasksToLocalStorage();
+      });
+
+      // 初期表示でも線を引く
+      // li.style.textDecoration = isDone ? 'line-through' : 'none';
+      // classListを使用してチェック済みのリストを復元する
+      if (isDone) {
+        li.classList.add('completed');
       }
 
-      // フィルターボタンを押した時の動作
-      function pressFilterButtons(filterType) {
-        const allTask = document.querySelectorAll('#taskList li');
-        allTask.forEach((li) => {
-          const checkbox = li.querySelector('input[type = checkbox]');
-          li.classList.remove('task-visible', 'task-hidden');
-          if (filterType === 'all') {
-            // li.style.display = 'flex';
-            li.classList.add('task-visible');
-          } else if (filterType === 'active') {
-            // li.style.display = checkbox && checkbox.checked ? 'none' : 'flex';
-            li.classList.add(
-              checkbox && checkbox.checked ? 'task-hidden' : 'task-visible'
-            );
-          } else if (filterType === 'completed') {
-            // li.style.display = checkbox && checkbox.checked ? 'flex' : 'none';
-            li.classList.add(
-              checkbox && checkbox.checked ? 'task-visible' : 'task-hidden'
-            );
+      // チェックボックスを追加
+      leftDiv.appendChild(checkbox);
+
+      // タスクのテキストを追加
+      textSpan.classList.add('taskText');
+      textSpan.textContent = taskText;
+
+      // 編集機能を割り当てる
+      enableEditing(textSpan);
+
+      // const dueDateInput = document.getElementById('dueDate');
+      // const dueDate = dueDateInput.value;
+      if (dueDate !== '') {
+        const dateObj = new Date(dueDate);
+        const isValid = !isNaN(dateObj.getTime());
+
+        if (!isValid) {
+          alert('正しい日付を入力してください');
+          return;
+        }
+
+        // 天気データの追加
+        const weatherSpan = document.createElement('span');
+        weatherSpan.classList.add('weatherInfo');
+        if (dueDate) {
+          const matched = weatherList.find((item) => item.date === dueDate);
+          if (matched) {
+            weatherSpan.textContent = `${matched.emoji} ${matched.rain}%`;
+            rightDiv.appendChild(weatherSpan);
           }
-        });
+        }
+
+        // 期限日を追加
+        const dueDateSpan = document.createElement('span');
+        dueDateSpan.classList.add('dueDate');
+        dueDateSpan.textContent = `（〜${dueDate}）`;
+        rightDiv.appendChild(dueDateSpan);
       }
 
-      function updateFilterButtons(activeButtonId) {
-        const buttons = document.querySelectorAll('.filter-button');
-        buttons.forEach((btn) => {
-          btn.classList.remove('active');
+      // テキストを追加
+      // li.appendChild(textSpan);
+      leftDiv.appendChild(textSpan);
+
+      // デリートボタンの設定
+      const dlButton = document.createElement('button');
+      dlButton.classList.add('delete-btn');
+      dlButton.textContent = 'del';
+
+      // デリート押下されたらリストから削除する
+      dlButton.addEventListener('click', function () {
+        //  fadingクラスを付与してフェード開始、アニメーションが終わる0.3秒後に削除
+        fadeAndRemove(li, () => {
+          // LocalStorage保存
+          saveTasksToLocalStorage();
+          // Clear Completedボタンの表示設定
+          updateClearCompletedVisibility();
+          // Clear Allボタンの表示設定
+          updateClearAllVisibility();
         });
-        const activeBtn = document.getElementById(activeButtonId);
-        activeBtn.classList.add('active');
-      }
-
-      // ==== フィルターボタンのイベント登録 ==== //
-      // 全表示
-      document.getElementById('showAll').addEventListener('click', () => {
-        currentFilterType = 'all';
-        pressFilterButtons('all');
-        updateFilterButtons('showAll');
-      });
-      // 未完了
-      document.getElementById('showActive').addEventListener('click', () => {
-        currentFilterType = 'active';
-        pressFilterButtons('active');
-        updateFilterButtons('showActive');
-      });
-      // 完了
-      document.getElementById('showCompleted').addEventListener('click', () => {
-        currentFilterType = 'completed';
-        pressFilterButtons('completed');
-        updateFilterButtons('showCompleted');
       });
 
-      // お天気データのAPI取得
-      async function getWeather() {
-        const url =
-          'https://api.open-meteo.com/v1/forecast?latitude=34.6938&longitude=135.5011&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo';
-        // 'https://api.open-meteo.com/v1/forecast?latitude=53.3331&longitude=-6.2489&daily=weather_code,precipitation_probability_max&timezone=auto';
+      // デリートボタンを追加
+      rightDiv.appendChild(dlButton);
 
-        try {
-          const response = await fetch(url);
-          const weatherData = await response.json();
-          console.log('取得成功:', weatherData); // ← ここで確認
-          editData(weatherData);
-        } catch (error) {
-          console.error('エラー内容:', error); // ← エラー詳細を確認
-          showErrorBanner(
-            '天気データの取得に失敗しました。しばらくして再度お試しください。（クリックで非表示）'
+      // leftDivとrightDivをliに追加
+      li.appendChild(leftDiv);
+      li.appendChild(rightDiv);
+
+      // タスクリストとして追加
+      taskList.appendChild(li);
+
+      // タスクを追加したときに入力欄へ自動でフォーカスを戻す
+      taskInput.focus();
+      // Clear Completedボタンの表示設定
+      updateClearCompletedVisibility();
+      // Clear Allボタンの表示設定
+      updateClearAllVisibility();
+      // // LocalStorage保存
+      // saveTasksToLocalStorage();
+    }
+
+    // フィルターボタンを押した時の動作
+    function pressFilterButtons(filterType) {
+      const allTask = document.querySelectorAll('#taskList li');
+      allTask.forEach((li) => {
+        const checkbox = li.querySelector('input[type = checkbox]');
+        li.classList.remove('task-visible', 'task-hidden');
+        if (filterType === 'all') {
+          // li.style.display = 'flex';
+          li.classList.add('task-visible');
+        } else if (filterType === 'active') {
+          // li.style.display = checkbox && checkbox.checked ? 'none' : 'flex';
+          li.classList.add(
+            checkbox && checkbox.checked ? 'task-hidden' : 'task-visible'
+          );
+        } else if (filterType === 'completed') {
+          // li.style.display = checkbox && checkbox.checked ? 'flex' : 'none';
+          li.classList.add(
+            checkbox && checkbox.checked ? 'task-visible' : 'task-hidden'
           );
         }
+      });
+    }
+
+    function updateFilterButtons(activeButtonId) {
+      const buttons = document.querySelectorAll('.filter-button');
+      buttons.forEach((btn) => {
+        btn.classList.remove('active');
+      });
+      const activeBtn = document.getElementById(activeButtonId);
+      activeBtn.classList.add('active');
+    }
+
+    // ==== フィルターボタンのイベント登録 ==== //
+    // 全表示
+    document.getElementById('showAll').addEventListener('click', () => {
+      currentFilterType = 'all';
+      pressFilterButtons('all');
+      updateFilterButtons('showAll');
+    });
+    // 未完了
+    document.getElementById('showActive').addEventListener('click', () => {
+      currentFilterType = 'active';
+      pressFilterButtons('active');
+      updateFilterButtons('showActive');
+    });
+    // 完了
+    document.getElementById('showCompleted').addEventListener('click', () => {
+      currentFilterType = 'completed';
+      pressFilterButtons('completed');
+      updateFilterButtons('showCompleted');
+    });
+
+    // お天気データのAPI取得
+    async function getWeather() {
+      const url =
+        'https://api.open-meteo.com/v1/forecast?latitude=34.6938&longitude=135.5011&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo';
+      // 'https://api.open-meteo.com/v1/forecast?latitude=53.3331&longitude=-6.2489&daily=weather_code,precipitation_probability_max&timezone=auto';
+
+      try {
+        const response = await fetch(url);
+        const weatherData = await response.json();
+        console.log('取得成功:', weatherData); // ← ここで確認
+        editData(weatherData);
+      } catch (error) {
+        console.error('エラー内容:', error); // ← エラー詳細を確認
+        showErrorBanner(
+          '天気データの取得に失敗しました。しばらくして再度お試しください。（クリックで非表示）'
+        );
       }
-      // エラーはクリックで即時非表示にする（ユーザーが閉じる動作）
-      document.getElementById('errorBanner').addEventListener('click', () => {
-        const banner = document.getElementById('errorBanner');
+    }
+    // エラーはクリックで即時非表示にする（ユーザーが閉じる動作）
+    document.getElementById('errorBanner').addEventListener('click', () => {
+      const banner = document.getElementById('errorBanner');
+      banner.classList.remove('show');
+      setTimeout(() => {
+        banner.style.display = 'none';
+        banner.textContent = ''; // 内容クリア（任意）
+      }, 500);
+    });
+
+    // お天気データの整形
+    function editData(weatherData) {
+      // weatherData.daily.time.forEach((date, i) => {
+      //   const codes = weatherData.daily.weather_code[i];
+      //   const rain = weatherData.daily.precipitation_probability_max[i];
+      //   const emoji = getWeatherEmoji(codes);
+
+      //   const weatherObj = {
+      //     date,
+      //     codes,
+      //     emoji,
+      //     rain,
+      //   };
+
+      //   weatherList.push(weatherObj);
+      // });
+      weatherList = weatherData.daily.time.map((date, i) => {
+        const codes = weatherData.daily.weather_code[i];
+        const rain = weatherData.daily.precipitation_probability_max[i];
+        const emoji = getWeatherEmoji(codes);
+
+        return { date, codes, emoji, rain };
+      });
+
+      console.log('整形後の天気データ:', weatherList);
+      // console.log(JSON.stringify(weatherList, null, 2));
+      renderWeatherSummary();
+    }
+
+    function getWeatherEmoji(codes) {
+      const emojiMap = [
+        { codes: [0, 1], emoji: '☀️' },
+        { codes: [2], emoji: '☁️' },
+        { codes: [3], emoji: '⛅️' },
+        { codes: [45, 48], emoji: '😶‍🌫️' },
+        { codes: [51, 56], emoji: '☔️😶‍🌫️' },
+        { codes: [53, 57], emoji: '☔️☔️😶‍🌫️' },
+        { codes: [55], emoji: '☔️☔️☔️😶‍🌫️' },
+        { codes: [56, 57], emoji: '🌫️🥶' },
+        { codes: [61], emoji: '☔️' },
+        { codes: [63], emoji: '☔️☔️' },
+        { codes: [65], emoji: '☔️☔️☔️' },
+        { codes: [66, 67], emoji: '☔️🥶' },
+        { codes: [71, 77, 85], emoji: '❄️' },
+        { codes: [73], emoji: '❄️❄️' },
+        { codes: [75, 86], emoji: '❄️❄️❄️' },
+        { codes: [80], emoji: '☔️⏳' },
+        { codes: [81], emoji: '☔️☔️⏳' },
+        { codes: [82], emoji: '☔️☔️☔️⏳' },
+        { codes: [95], emoji: '☔️⚡️' },
+        { codes: [96], emoji: '🧊☔️⚡️' },
+        { codes: [99], emoji: '🧊🧊☔️☔️⚡️⚡️' },
+      ];
+      const match = emojiMap.find((entry) => entry.codes.includes(codes));
+      return match ? match.emoji : '?';
+    }
+    // LocalStorage保存用関数
+    function saveTasksToLocalStorage() {
+      const allLis = document.querySelectorAll('#taskList li');
+      const taskData = [];
+      allLis.forEach((li) => {
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        const text = li.querySelector('.left span').textContent;
+        const dueDateSpan = li.querySelector('.dueDate');
+        const dueDate = dueDateSpan
+          ? dueDateSpan.textContent.replace(/[（）〜]/g, '')
+          : '';
+        const isDone = checkbox.checked;
+
+        // liそれぞれのclassListから優先度を抽出する
+        const priorityClass = Array.from(li.classList).find((cls) =>
+          cls.startsWith('priority-')
+        );
+        const priority = priorityClass
+          ? priorityClass.replace('priority-', '')
+          : 'normal';
+
+        taskData.push({ text, dueDate, isDone, priority });
+      });
+
+      localStorage.setItem('tasks', JSON.stringify(taskData));
+    }
+
+    // 復元関数（タスクを再表示）
+    function restoreTasksFromLocalStorage() {
+      const saved = localStorage.getItem('tasks');
+      if (!saved) return;
+
+      const taskArray = JSON.parse(saved);
+      // パース確認（まずはコンソールで確認）
+      console.log('復元データ：', taskArray);
+      // dueDate を基準に日付昇順で並び替える
+      taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      renderTasks(taskArray);
+      // Clear Completedボタンの表示設定
+      updateClearCompletedVisibility();
+      // Clear Allボタンの表示設定
+      updateClearAllVisibility();
+
+      // taskArray.forEach((item) => {
+      //   taskInput.value = item.text;
+      //   document.getElementById('dueDate').value = item.dueDate;
+      //   addTask(item.text, item.dueDate, item.isDone); // 既存のaddTask()を利用してUIを生成
+      // });
+    }
+
+    function renderTasks(taskArray) {
+      taskList.innerHTML = '';
+      taskArray.forEach((item) => {
+        addTask(item.text, item.dueDate, item.isDone, item.priority); // 既存のaddTask()を利用してUIを生成
+      });
+    }
+
+    function sortTasks(order = 'asc') {
+      const saved = localStorage.getItem('tasks');
+      if (!saved) return;
+
+      const taskArray = JSON.parse(saved);
+      if (order === 'asc') {
+        taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      } else {
+        taskArray.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+      }
+      renderTasks(taskArray);
+
+      // フィルタを再適用
+      pressFilterButtons(currentFilterType);
+    }
+
+    function fadeAndRemove(li, callbackAfterRemove) {
+      li.classList.add('fading');
+      setTimeout(() => {
+        li.remove();
+        if (typeof callbackAfterRemove === 'function') {
+          callbackAfterRemove();
+        }
+      }, 300);
+    }
+
+    function updateClearCompletedVisibility() {
+      const completedTasks = document.querySelectorAll(
+        '#taskList li.completed'
+      );
+      if (completedTasks.length > 0) {
+        clearCompletedBtn.classList.remove('hidden');
+      } else {
+        clearCompletedBtn.classList.add('hidden');
+      }
+      //   clearCompletedBtn.style.display = 'inline-block';
+      // } else {
+      //   clearCompletedBtn.style.display = 'none';
+      // }
+    }
+
+    function validateTaskInput(taskText, dueDate) {
+      const errorMsg = document.getElementById('errorMsg');
+      // 期限日付の取得とチェック
+      if (!dueDate) {
+        errorMsg.textContent = '⚠️ 期限日を入力してください';
+        errorMsg.style.display = 'block';
+        return false;
+      }
+
+      // 期限日の入力必須チェックを初期化
+      errorMsg.textContent = '';
+      errorMsg.style.display = 'none';
+      return true;
+    }
+
+    // 期限日のデフォルト日付（現在日付）を取得する
+    function getTodayDate() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    //全てのタスクを、表示とローカルストレージ両方から削除する
+    function clearAllTaskAndSettings() {
+      // タスクのみ localStorageから削除
+      localStorage.removeItem('tasks');
+      // 画面上のリストも全削除
+
+      const allLis = document.querySelectorAll('#taskList li');
+      let count = allLis.length;
+
+      allLis.forEach((li) => {
+        fadeAndRemove(li, () => {
+          count--;
+          if (count === 0) {
+            //完全に消えた後にUIリセット
+            // フィルター状態を初期化（全て表示に戻す）
+            currentFilterType = 'all';
+            pressFilterButtons('all');
+            updateFilterButtons('showAll');
+
+            // ボタンなどのUI調整
+            updateClearCompletedVisibility();
+            // Clear Allボタンの表示設定
+            updateClearAllVisibility();
+            //期限日入力を現在日付に戻す
+            dueDateInput.value = getTodayDate();
+          }
+        });
+      });
+    }
+
+    function updateClearAllVisibility() {
+      const allTask = document.querySelectorAll('#taskList li');
+      const clearAllBtn = document.getElementById('clearAll');
+      if (allTask.length > 0) {
+        clearAllBtn.classList.remove('hidden');
+      } else {
+        clearAllBtn.classList.add('hidden');
+      }
+    }
+
+    function showErrorBanner(message) {
+      const banner = document.getElementById('errorBanner');
+      banner.textContent = message;
+      banner.style.display = 'block';
+      banner.classList.add('show');
+
+      // 一定時間後に非表示（5秒）
+      setTimeout(() => {
         banner.classList.remove('show');
         setTimeout(() => {
           banner.style.display = 'none';
           banner.textContent = ''; // 内容クリア（任意）
-        }, 500);
-      });
+        }, 500); // アニメーション完了まで待つ
+      }, 5000);
+    }
+    function enableEditing(taskTextSpan) {
+      taskTextSpan.addEventListener('dblclick', () => {
+        const originalText = taskTextSpan.textContent;
+        const li = taskTextSpan.closest('li');
+        // 編集用input
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = originalText;
+        input.className = 'taskEditInput';
 
-      // お天気データの整形
-      function editData(weatherData) {
-        // weatherData.daily.time.forEach((date, i) => {
-        //   const codes = weatherData.daily.weather_code[i];
-        //   const rain = weatherData.daily.precipitation_probability_max[i];
-        //   const emoji = getWeatherEmoji(codes);
+        // Saveボタン
+        const saveButton = document.createElement('button');
+        saveButton.textContent = '💾';
+        saveButton.className = 'editSaveBtn';
 
-        //   const weatherObj = {
-        //     date,
-        //     codes,
-        //     emoji,
-        //     rain,
-        //   };
+        // Cancelボタン
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = '❌';
+        cancelButton.className = 'editCancelBtn';
 
-        //   weatherList.push(weatherObj);
-        // });
-        weatherList = weatherData.daily.time.map((date, i) => {
-          const codes = weatherData.daily.weather_code[i];
-          const rain = weatherData.daily.precipitation_probability_max[i];
-          const emoji = getWeatherEmoji(codes);
+        // 編集UIをまとめるコンテナ
+        const editContainer = document.createElement('div');
+        editContainer.className = 'editContainer';
+        editContainer.appendChild(input);
+        editContainer.appendChild(saveButton);
+        editContainer.appendChild(cancelButton);
 
-          return { date, codes, emoji, rain };
+        // spanをUIコンテナに置き換える
+        taskTextSpan.style.display = 'none';
+        li.querySelector('.left').appendChild(editContainer);
+        input.focus();
+
+        // 日本語変換中の開始と終了を検知
+        let isComposing = false;
+        input.addEventListener('compositionstart', () => {
+          isComposing = true;
+        });
+        input.addEventListener('compositionend', () => {
+          isComposing = false;
         });
 
-        console.log('整形後の天気データ:', weatherList);
-        // console.log(JSON.stringify(weatherList, null, 2));
-      }
-
-      function getWeatherEmoji(codes) {
-        const emojiMap = [
-          { codes: [0, 1], emoji: '☀️' },
-          { codes: [2], emoji: '☁️' },
-          { codes: [3], emoji: '⛅️' },
-          { codes: [45, 48], emoji: '😶‍🌫️' },
-          { codes: [51, 56], emoji: '☔️😶‍🌫️' },
-          { codes: [53, 57], emoji: '☔️☔️😶‍🌫️' },
-          { codes: [55], emoji: '☔️☔️☔️😶‍🌫️' },
-          { codes: [56, 57], emoji: '🌫️🥶' },
-          { codes: [61], emoji: '☔️' },
-          { codes: [63], emoji: '☔️☔️' },
-          { codes: [65], emoji: '☔️☔️☔️' },
-          { codes: [66, 67], emoji: '☔️🥶' },
-          { codes: [71, 77, 85], emoji: '❄️' },
-          { codes: [73], emoji: '❄️❄️' },
-          { codes: [75, 86], emoji: '❄️❄️❄️' },
-          { codes: [80], emoji: '☔️⏳' },
-          { codes: [81], emoji: '☔️☔️⏳' },
-          { codes: [82], emoji: '☔️☔️☔️⏳' },
-          { codes: [95], emoji: '☔️⚡️' },
-          { codes: [96], emoji: '🧊☔️⚡️' },
-          { codes: [99], emoji: '🧊🧊☔️☔️⚡️⚡️' },
-        ];
-        const match = emojiMap.find((entry) => entry.codes.includes(codes));
-        return match ? match.emoji : '?';
-      }
-      // LocalStorage保存用関数
-      function saveTasksToLocalStorage() {
-        const allLis = document.querySelectorAll('#taskList li');
-        const taskData = [];
-        allLis.forEach((li) => {
-          const checkbox = li.querySelector('input[type="checkbox"]');
-          const text = li.querySelector('.left span').textContent;
-          const dueDateSpan = li.querySelector('.dueDate');
-          const dueDate = dueDateSpan
-            ? dueDateSpan.textContent.replace(/[（）〜]/g, '')
-            : '';
-          const isDone = checkbox.checked;
-
-          // liそれぞれのclassListから優先度を抽出する
-          const priorityClass = Array.from(li.classList).find((cls) =>
-            cls.startsWith('priority-')
-          );
-          const priority = priorityClass
-            ? priorityClass.replace('priority-', '')
-            : 'normal';
-
-          taskData.push({ text, dueDate, isDone, priority });
+        // Save：編集確定（mousedownでフォーカス喪失を防ぐ）
+        saveButton.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          applyEdit();
         });
 
-        localStorage.setItem('tasks', JSON.stringify(taskData));
-      }
-
-      // 復元関数（タスクを再表示）
-      function restoreTasksFromLocalStorage() {
-        const saved = localStorage.getItem('tasks');
-        if (!saved) return;
-
-        const taskArray = JSON.parse(saved);
-        // パース確認（まずはコンソールで確認）
-        console.log('復元データ：', taskArray);
-        // dueDate を基準に日付昇順で並び替える
-        taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-        renderTasks(taskArray);
-        // Clear Completedボタンの表示設定
-        updateClearCompletedVisibility();
-        // Clear Allボタンの表示設定
-        updateClearAllVisibility();
-
-        // taskArray.forEach((item) => {
-        //   taskInput.value = item.text;
-        //   document.getElementById('dueDate').value = item.dueDate;
-        //   addTask(item.text, item.dueDate, item.isDone); // 既存のaddTask()を利用してUIを生成
-        // });
-      }
-
-      function renderTasks(taskArray) {
-        taskList.innerHTML = '';
-        taskArray.forEach((item) => {
-          addTask(item.text, item.dueDate, item.isDone, item.priority); // 既存のaddTask()を利用してUIを生成
+        // Cancel：編集キャンセル
+        cancelButton.addEventListener('click', () => {
+          // 編集UIを削除して元に戻す
+          input.remove();
+          saveButton.remove();
+          cancelButton.remove();
+          taskTextSpan.style.display = '';
         });
-      }
 
-      function sortTasks(order = 'asc') {
-        const saved = localStorage.getItem('tasks');
-        if (!saved) return;
-
-        const taskArray = JSON.parse(saved);
-        if (order === 'asc') {
-          taskArray.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-        } else {
-          taskArray.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
-        }
-        renderTasks(taskArray);
-
-        // フィルタを再適用
-        pressFilterButtons(currentFilterType);
-      }
-
-      function fadeAndRemove(li, callbackAfterRemove) {
-        li.classList.add('fading');
-        setTimeout(() => {
-          li.remove();
-          if (typeof callbackAfterRemove === 'function') {
-            callbackAfterRemove();
-          }
-        }, 300);
-      }
-
-      function updateClearCompletedVisibility() {
-        const completedTasks = document.querySelectorAll(
-          '#taskList li.completed'
-        );
-        if (completedTasks.length > 0) {
-          clearCompletedBtn.classList.remove('hidden');
-        } else {
-          clearCompletedBtn.classList.add('hidden');
-        }
-        //   clearCompletedBtn.style.display = 'inline-block';
-        // } else {
-        //   clearCompletedBtn.style.display = 'none';
-        // }
-      }
-
-      function validateTaskInput(taskText, dueDate) {
-        const errorMsg = document.getElementById('errorMsg');
-        // 期限日付の取得とチェック
-        if (!dueDate) {
-          errorMsg.textContent = '⚠️ 期限日を入力してください';
-          errorMsg.style.display = 'block';
-          return false;
-        }
-
-        // 期限日の入力必須チェックを初期化
-        errorMsg.textContent = '';
-        errorMsg.style.display = 'none';
-        return true;
-      }
-
-      // 期限日のデフォルト日付（現在日付）を取得する
-      function getTodayDate() {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-      }
-
-      //全てのタスクを、表示とローカルストレージ両方から削除する
-      function clearAllTaskAndSettings() {
-        // タスクのみ localStorageから削除
-        localStorage.removeItem('tasks');
-        // 画面上のリストも全削除
-
-        const allLis = document.querySelectorAll('#taskList li');
-        let count = allLis.length;
-
-        allLis.forEach((li) => {
-          fadeAndRemove(li, () => {
-            count--;
-            if (count === 0) {
-              //完全に消えた後にUIリセット
-              // フィルター状態を初期化（全て表示に戻す）
-              currentFilterType = 'all';
-              pressFilterButtons('all');
-              updateFilterButtons('showAll');
-
-              // ボタンなどのUI調整
-              updateClearCompletedVisibility();
-              // Clear Allボタンの表示設定
-              updateClearAllVisibility();
-              //期限日入力を現在日付に戻す
-              dueDateInput.value = getTodayDate();
-            }
-          });
-        });
-      }
-
-      function updateClearAllVisibility() {
-        const allTask = document.querySelectorAll('#taskList li');
-        const clearAllBtn = document.getElementById('clearAll');
-        if (allTask.length > 0) {
-          clearAllBtn.classList.remove('hidden');
-        } else {
-          clearAllBtn.classList.add('hidden');
-        }
-      }
-
-      function showErrorBanner(message) {
-        const banner = document.getElementById('errorBanner');
-        banner.textContent = message;
-        banner.style.display = 'block';
-        banner.classList.add('show');
-
-        // 一定時間後に非表示（5秒）
-        setTimeout(() => {
-          banner.classList.remove('show');
-          setTimeout(() => {
-            banner.style.display = 'none';
-            banner.textContent = ''; // 内容クリア（任意）
-          }, 500); // アニメーション完了まで待つ
-        }, 5000);
-      }
-      function enableEditing(taskTextSpan) {
-        taskTextSpan.addEventListener('dblclick', () => {
-          const originalText = taskTextSpan.textContent;
-          const li = taskTextSpan.closest('li');
-          // 編集用input
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.value = originalText;
-          input.className = 'taskEditInput';
-
-          // Saveボタン
-          const saveButton = document.createElement('button');
-          saveButton.textContent = '💾';
-          saveButton.className = 'editSaveBtn';
-
-          // Cancelボタン
-          const cancelButton = document.createElement('button');
-          cancelButton.textContent = '❌';
-          cancelButton.className = 'editCancelBtn';
-
-          // 編集UIをまとめるコンテナ
-          const editContainer = document.createElement('div');
-          editContainer.className = 'editContainer';
-          editContainer.appendChild(input);
-          editContainer.appendChild(saveButton);
-          editContainer.appendChild(cancelButton);
-
-          // spanをUIコンテナに置き換える
-          taskTextSpan.style.display = 'none';
-          li.querySelector('.left').appendChild(editContainer);
-          input.focus();
-
-          // 日本語変換中の開始と終了を検知
-          let isComposing = false;
-          input.addEventListener('compositionstart', () => {
-            isComposing = true;
-          });
-          input.addEventListener('compositionend', () => {
-            isComposing = false;
-          });
-
-          // Save：編集確定（mousedownでフォーカス喪失を防ぐ）
-          saveButton.addEventListener('mousedown', (e) => {
+        // 編集確定（enter key）・キャンセル（Escキー）
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !isComposing) {
             e.preventDefault();
             applyEdit();
-          });
-
-          // Cancel：編集キャンセル
-          cancelButton.addEventListener('click', () => {
-            // 編集UIを削除して元に戻す
-            input.remove();
-            saveButton.remove();
-            cancelButton.remove();
-            taskTextSpan.style.display = '';
-          });
-
-          // 編集確定（enter key）・キャンセル（Escキー）
-          input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !isComposing) {
-              e.preventDefault();
-              applyEdit();
-            }
-            if (e.key === 'Escape') {
-              cancelButton.click();
-            }
-          });
-
-          // フォーカスが外れた時もキャンセル（IME中でなければ）
-          input.addEventListener('blur', () => {
-            if (!isComposing) cancelButton.click();
-          });
-
-          // 編集確定処理関数
-          function applyEdit() {
-            const newText = input.value;
-            taskTextSpan.textContent = newText;
-            saveTasksToLocalStorage();
-
-            // 編集UIを削除、元に戻す
-            if (input.parentNode) input.remove();
-            if (saveButton.parentNode) saveButton.remove();
-            if (cancelButton.parentNode) cancelButton.remove();
-            taskTextSpan.style.display = '';
+          }
+          if (e.key === 'Escape') {
+            cancelButton.click();
           }
         });
-      }
-    </script>
-  </body>
+
+        // フォーカスが外れた時もキャンセル（IME中でなければ）
+        input.addEventListener('blur', () => {
+          if (!isComposing) cancelButton.click();
+        });
+
+        // 編集確定処理関数
+        function applyEdit() {
+          const newText = input.value;
+          taskTextSpan.textContent = newText;
+          saveTasksToLocalStorage();
+
+          // 編集UIを削除、元に戻す
+          if (input.parentNode) input.remove();
+          if (saveButton.parentNode) saveButton.remove();
+          if (cancelButton.parentNode) cancelButton.remove();
+          taskTextSpan.style.display = '';
+        }
+      });
+    }
+
+    function renderWeatherSummary() {
+      const today = document.getElementById('todayWeather');
+      const tomorrow = document.getElementById('tomorrowWeather');
+      if (!weatherList.length) return;
+      today.textContent = weatherList[0]?.emoji || '-';
+      tomorrow.textContent = weatherList[1]?.emoji || '-';
+    }
+  </script>
+</body>
+
 </html>

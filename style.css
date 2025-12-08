@@ -4,7 +4,8 @@ body {
 }
 
 body.dark {
-  background-color: #121212;
+  /* background-color: #121212; */
+  background-color: #252525;
   color: #ffffff;
 }
 
@@ -229,4 +230,20 @@ body.dark .priority-low {
 .editCancelBtn {
   background-color: lightGray;
   color: black;
+}
+
+.weather-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.weather-label {
+  font-weight: 600;
+}
+
+.weather-icon {
+  min-width: 1.5rem;
+  text-align: center;
 }
