@@ -9,21 +9,25 @@
 </p>
 <!-- markdownlint-disable MD033 -->
 
-これは、カジュアルに使えるシンプルな ToDo リストアプリです。ブラウザ上で完結し、リロード後も入力内容が保存されます。
-This is a simple and casual ToDo list app. All tasks are saved locally and remain available even after reloading the browser.
+このアプリは、ブラウザだけで気軽に使える **シンプルな ToDo リスト** です。
+タスクは自動的にローカル保存され、ページを再読み込みしても消えません。
+
+This is a simple and lightweight ToDo application.
+Tasks are saved locally and persist across browser reloads.
 
 ---
 
 ## 🚀 主な機能 / Features
 
-- タスクの追加・編集・削除
-  Add, edit, and delete tasks
-- 期限日の設定と日付順ソート
-  Set due dates and sort by date
-- タスクの状態でのフィルタ（完了／未完了）
-  Filter tasks by status (completed / incomplete)
-- 現地の天気アイコン表示（Open-Meteo API 使用）
-  Display current weather using Open-Meteo API
+- ✏️ **タスクの追加・編集・削除**
+- 🎨 **優先度による背景色の自動変更（High / Normal / Low）**
+- 🖱️ **タスク名のダブルクリック編集（DblClick Edit）**
+- 📅 **期限日の設定と日付順ソート**
+- ✔️ **ステータス（完了 / 未完了）フィルタ**
+- 📌 **タスクの編集内容は自動保存（LocalStorage）**
+- ⚠️ **完了タスクのまとめて削除（Clear Completed）**
+- 🌙 **ライト / ダークテーマ切替**
+- ☀️ **現在地の天気アイコン表示（Open‑Meteo API）**
 
 ---
 
@@ -33,34 +37,35 @@ This is a simple and casual ToDo list app. All tasks are saved locally and remai
 
 ---
 
-## 🛠️ 使用技術 / Technologies Used
+## 🛠️ 使用技術 / Tech Stack
 
-- HTML
-- CSS
-- JavaScript
+- HTML / CSS / JavaScript
 - Open-Meteo API
 
 ---
 
-## 💻 ローカルでの動作方法 / How to Run Locally
+## 💻 ローカルでの実行方法 / How to Run Locally
 
 ```bash
 git clone https://github.com/Nikuman1123/Todo.git
 cd Todo
-# index.html をブラウザで開いてください
+# index.html をブラウザで開くだけ
 # Just open index.html in your browser
 ```
 
 ---
 
-## 🙋‍♂️ 自己紹介 / Author Note
+## 🙋‍♂️ 制作者より / Author Note
 
-これは HTML / CSS / JavaScript の学習用に作成したアプリです。自由にご利用ください。
-This app was built as a learning project for HTML, CSS, and JavaScript. Feel free to explore and modify it.
+HTML / CSS / JavaScript の学習を目的として作成したアプリです。
+自由にクローン・改変してご利用ください。
+
+This app was built for learning purposes.
+Feel free to explore, modify, and use it.
 
 ---
 
 ## 📄 ライセンス / License
 
-このリポジトリには特別なライセンスは設定されていません。
-No specific license is applied to this repository.
+特別なライセンスは設定していません。
+No specific license is applied.
