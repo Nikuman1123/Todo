@@ -321,3 +321,13 @@ body.dark .priority-low {
     display: none;
   }
 }
+
+input,
+textarea {
+  font-size: 16px;
+}
+
+/* Apple推奨タップ領域 */
+input {
+  min-height: 44px;
+}
