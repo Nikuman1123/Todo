@@ -103,25 +103,38 @@ body.dark .theme-btn:hover {
 
 /* 区切り線、上下余白 */
 li {
-  border-bottom: 1px solid #ccc;
-  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
 }
 
+/* 左側：縮んでOK */
 .left {
   display: flex;
   align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
-.left span {
+/* .left span {
   font-size: 18px;
   margin-left: 8px;
+} */
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .right button {
-  margin-left: 12px;
+  margin-left: 0;
   padding: 4px 8px;
 }
 
@@ -140,6 +153,14 @@ li {
   margin-left: 8px;
   font-size: 0.9em;
   color: gray;
+}
+
+/* タスク文字 */
+.taskText {
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 完了タスクの見た目変更 */
@@ -269,11 +290,8 @@ body.dark .priority-low {
   color: black;
 }
 
-.weather-summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: 8px;
+.status-area {
+  padding-left: 8px;
 }
 
 .weather-label {
@@ -283,4 +301,23 @@ body.dark .priority-low {
 .weather-icon {
   min-width: 1.5rem;
   text-align: center;
+}
+
+/* スマホ対応 */
+@media (max-width: 480px) {
+  li {
+    padding: 10px 8px;
+  }
+
+  input[type='checkbox'] {
+    transform: scale(1.2);
+  }
+
+  .delete-btn {
+    padding: 6px 10px;
+  }
+
+  .weatherInfo {
+    display: none;
+  }
 }

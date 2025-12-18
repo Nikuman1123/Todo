@@ -4,12 +4,15 @@
 <head>
   <meta charset="UTF-8" />
   <title>ToDoApp</title>
+
+  <!-- ★ iPhone表示の基本：必須 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
   <link rel="stylesheet" href="style.css" />
   <!-- M PLUS Rounded 1cを設定する -->
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet" />
   <!-- Font Awesome CDN（v6） -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- <link rel="stylesheet" href="all.css" /> -->
 </head>
 
 <body>
@@ -18,43 +21,51 @@
     <button id="toggleTheme" class="theme-btn">🐦‍⬛</button>
   </header>
 
-  <div id="errorBanner" class="error-banner" style="display: none"></div>
+  <main class="container">
+    <div id="errorBanner" class="error-banner" style="display: none"></div>
 
-  <input type="text" id="taskInput" placeholder="タスクを入力" />
-  <input type="date" id="dueDate" />
+    <!-- 入力ゾーン -->
+    <section class="controls">
+      <input type="text" id="taskInput" placeholder="タスクを入力" />
+      <input type="date" id="dueDate" />
 
-  <select id="priority">
-    <option value="normal" selected>Normal</option>
-    <option value="high">High</option>
-    <option value="low">Low</option>
-  </select>
+      <select id="priority">
+        <option value="normal" selected>Normal</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
 
-  <button id="addBtn" class="addBtn">Add</button>
-  <button id="clearAll" class="delete-btn hidden">Clear All</button>
-  <!-- <button id="toggleTheme">☀️ / 🌙</button> -->
-  <!-- <button id="toggleTheme">Dark / Light</button> -->
+      <button id="addBtn" class="addBtn">Add</button>
+      <button id="clearAll" class="delete-btn hidden">Clear All</button>
+    </section>
+    <!-- <button id="toggleTheme">☀️ / 🌙</button> -->
+    <!-- <button id="toggleTheme">Dark / Light</button> -->
 
-  <br />
-  <!-- 今日と明日の天気を表示 -->
-  <div class="weather-summary">
-    <span class="weather-label">Today:</span>
-    <span id="todayWeather" class="weather-icon">--</span>
-    <span class="weather-label">Tomorrow:</span>
-    <span id="tomorrowWeather" class="weather-icon">--</span>
-  </div>
-  <br>
-  <p id="errorMsg" class="error-message" style="color: crimson; display: none"></p>
+    <section class="status-area">
+      <!-- 天気＋エラー -->
+      <div class="weather-summary">
+        <span class="weather-label">Today:</span>
+        <span id="todayWeather" class="weather-icon">--</span>
+        <span class="weather-label">Tomorrow:</span>
+        <span id="tomorrowWeather" class="weather-icon">--</span>
+      </div>
 
-  <button id="toggleSort" class="sort-button sort-asc">Sort by Date</button>
-  <button id="showAll" class="filter-button">All</button>
-  <button id="showActive" class="filter-button">Active</button>
-  <button id="showCompleted" class="filter-button">Completed</button>
-  <button id="clearCompleted" class="delete-btn hidden">Clear Completed</button>
+      <p id="errorMsg" class="error-message" style="color: crimson; display: none"></p>
+    </section>
 
-  <ul id="taskList">
-    <!-- JavaScriptでliを追加 -->
-  </ul>
+    <!-- フィルター -->
+    <section class="filters">
+      <button id="toggleSort" class="sort-button sort-asc">Sort by Date</button>
+      <button id="showAll" class="filter-button">All</button>
+      <button id="showActive" class="filter-button">Active</button>
+      <button id="showCompleted" class="filter-button">Completed</button>
+      <button id="clearCompleted" class="delete-btn hidden">Clear Completed</button>
+    </section>
 
+    <ul id="taskList">
+      <!-- JavaScriptでliを追加 -->
+    </ul>
+  </main>
   <script>
     const taskInput = document.getElementById('taskInput');
     const dueDateInput = document.getElementById('dueDate');
