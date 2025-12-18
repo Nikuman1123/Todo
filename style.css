@@ -331,3 +331,17 @@ textarea {
 input {
   min-height: 44px;
 }
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* 日付・優先度 共通 */
+.input-row input,
+.input-row select {
+  height: 44px;
+  font-size: 14px;
+  padding: 6px 8px;
+}

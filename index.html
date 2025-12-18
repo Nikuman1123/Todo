@@ -27,13 +27,15 @@
     <!-- 入力ゾーン -->
     <section class="controls">
       <input type="text" id="taskInput" placeholder="タスクを入力" />
-      <input type="date" id="dueDate" />
 
-      <select id="priority">
-        <option value="normal" selected>Normal</option>
-        <option value="high">High</option>
-        <option value="low">Low</option>
-      </select>
+      <div class="imput-row">
+        <input type="date" id="dueDate" />
+        <select id="priority">
+          <option value="normal" selected>Normal</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
 
       <button id="addBtn" class="addBtn">Add</button>
       <button id="clearAll" class="delete-btn hidden">Clear All</button>
