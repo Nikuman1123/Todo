@@ -26,8 +26,10 @@ Tasks are saved locally and persist across browser reloads.
 - ✔️ **ステータス（完了 / 未完了）フィルタ**
 - 📌 **タスクの編集内容は自動保存（LocalStorage）**
 - ⚠️ **完了タスクのまとめて削除（Clear Completed）**
-- 🌙 **ライト / ダークテーマ切替**
 - ☀️ **現在地の天気アイコン表示（Open‑Meteo API）**
+  
+- 📱 **レスポンシブ対応**
+- 🌙 **ライト / ダークテーマ切替**
 
 ---
 
