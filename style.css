@@ -381,13 +381,12 @@ input {
 /* Clear All を横一杯にしない（誤タップ防止） */
 #clearAll {
   width: auto; /* 100%を解除 */
-  display: inline-flex; /* 中身に合わせる */
   align-items: center;
   justify-content: center;
   align-self: flex-start;
   border-radius: 4px;
 }
-#clearAll.hidden {
+.hidden {
   display: none;
 }
 
