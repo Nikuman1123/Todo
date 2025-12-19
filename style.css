@@ -75,7 +75,7 @@ body.dark .theme-btn:hover {
 }
 
 .addBtn {
-  margin-left: 5px;
+  margin-left: 0;
 }
 
 .filter-button {
@@ -336,12 +336,70 @@ input {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 /* 日付・優先度 共通 */
 .input-row input,
-.input-row select {
+.input-row select,
+.input-row button {
   height: 44px;
   font-size: 14px;
   padding: 6px 8px;
+}
+
+/* 入力ゾーン全体を縦に積む */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* タスク入力欄を横幅一杯 */
+#taskInput {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 8px 12px;
+}
+
+/* 日付は固定幅（iPhoneで崩れにくい目安） */
+.input-row #dueDate {
+  flex: 0 0 140px;
+  min-width: 120px;
+}
+
+.input-row #priority {
+  flex: 0 0 auto; /* ← 伸びない＆縮まない（まずはこれで確実に止める） */
+  width: 9rem; /* Normalが余裕で収まる目安。必要なら 8rem に */
+}
+.input-row #addBtn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Clear All を横一杯にしない（誤タップ防止） */
+#clearAll {
+  width: auto; /* 100%を解除 */
+  display: inline-flex; /* 中身に合わせる */
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  border-radius: 4px;
+}
+
+/* Add / Clear All を横並びにする行 */
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* ボタン間の余白 */
+}
+
+/* Add は左、Clear All はその右（自然に並ぶ） */
+.action-row #addBtn {
+  flex: 0 0 auto;
+}
+
+.action-row #clearAll {
+  flex: 0 0 auto;
 }
