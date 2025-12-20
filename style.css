@@ -275,7 +275,6 @@ body.dark .priority-low {
 .editCancelBtn {
   font-size: 1rem;
   padding: 2px 6px;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -343,6 +342,7 @@ input {
 .input-row input,
 .input-row select,
 .input-row button {
+  box-sizing: border-box;
   height: 44px;
   font-size: 14px;
   padding: 6px 8px;
@@ -385,9 +385,6 @@ input {
   justify-content: center;
   align-self: flex-start;
   border-radius: 4px;
-}
-.hidden {
-  display: none;
 }
 
 /* Add / Clear All を横並びにする行 */
