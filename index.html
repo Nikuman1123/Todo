@@ -52,6 +52,12 @@
         <span id="todayWeather" class="weather-icon">--</span>
         <span class="weather-label">Tomorrow:</span>
         <span id="tomorrowWeather" class="weather-icon">--</span>
+        <label class="weather-label" for="weatherLocation">Location:</label>
+        <select id="weatherLocation" class="weather-select">
+          <option value="tokyo">Tokyo</option>
+          <option value="osaka">Osaka</option>
+          <option value="sapporo">Sapporo</option>
+        </select>
       </div>
 
       <p id="errorMsg" class="error-message" style="color: crimson; display: none"></p>
@@ -75,6 +81,15 @@
     const dueDateInput = document.getElementById('dueDate');
     const taskList = document.getElementById('taskList');
     const clearCompletedBtn = document.getElementById('clearCompleted');
+
+    const weatherLocationSelect = document.getElementById('weatherLocation');
+    const defaultWeatherLocation = 'tokyo';
+    const weatherApiEndpoints = {
+      tokyo: 'https://api.open-meteo.com/v1/forecast?latitude=35.6895&longitude=139.6917&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo',
+      osaka: 'https://api.open-meteo.com/v1/forecast?latitude=34.6938&longitude=135.5011&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo',
+      sapporo: 'https://api.open-meteo.com/v1/forecast?latitude=43.0667&longitude=141.35&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo',
+    };
+
     let weatherList = [];
     let currentFilterType = 'all'; //現在のフィルター状態保持
 
@@ -94,13 +109,29 @@
       // タスク入力欄に自動フォーカス;
       taskInput.focus();
 
+      weatherLocationSelect.addEventListener('change', () => {
+        const selectedLocation = resolveWeatherLocationKey(
+          weatherLocationSelect.value
+        );
+        weatherLocationSelect.value = selectedLocation;
+        localStorage.setItem('weatherLocation', selectedLocation);
+        getWeather(selectedLocation).then(() => {
+          restoreTasksFromLocalStorage();
+          pressFilterButtons(currentFilterType);
+        });
+      });
       // お天気とタスクの復元
-      getWeather().then(() => {
+      const savedWeatherLocation = resolveWeatherLocationKey(
+        localStorage.getItem('weatherLocation') || defaultWeatherLocation
+      );
+      weatherLocationSelect.value = savedWeatherLocation;
+      localStorage.setItem('weatherLocation', savedWeatherLocation);
+
+      getWeather(savedWeatherLocation).then(() => {
         restoreTasksFromLocalStorage();
-        pressFilterButtons('all'); // ← 表示状態もAllにする
+        pressFilterButtons('all');
       });
       sortTasks('asc');
-
       // デフォルトで現在日付をセットする
       dueDateInput.value = getTodayDate();
     });
@@ -406,10 +437,11 @@
     });
 
     // お天気データのAPI取得
-    async function getWeather() {
+    async function getWeather(locationKey = defaultWeatherLocation) {
       const url =
-        'https://api.open-meteo.com/v1/forecast?latitude=34.6938&longitude=135.5011&daily=weather_code,precipitation_probability_max&timezone=Asia%2FTokyo';
-      // 'https://api.open-meteo.com/v1/forecast?latitude=53.3331&longitude=-6.2489&daily=weather_code,precipitation_probability_max&timezone=auto';
+        weatherApiEndpoints[locationKey] ||
+        weatherApiEndpoints[defaultWeatherLocation];
+
 
       try {
         const response = await fetch(url);
@@ -423,6 +455,11 @@
         );
       }
     }
+
+    function resolveWeatherLocationKey(value) {
+      return weatherApiEndpoints[value] ? value : defaultWeatherLocation;
+    }
+
     // エラーはクリックで即時非表示にする（ユーザーが閉じる動作）
     document.getElementById('errorBanner').addEventListener('click', () => {
       const banner = document.getElementById('errorBanner');
