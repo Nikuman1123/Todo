@@ -1,5 +1,7 @@
+@charset "UTF-8";
+
 body {
-  font-family: 'M PLUS Rounded 1c', 'Roboto', sans-serif;
+  font-family: "M PLUS Rounded 1c", "Roboto", sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -54,7 +56,7 @@ button:hover {
   margin: 0;
 }
 
-/* チE�Eマ�E替ボタン */
+/* テーマ切替ボタン */
 .theme-btn {
   font-size: 24px;
   background: none;
@@ -69,7 +71,7 @@ button:hover {
   background: rgba(0, 0, 0, 0.07);
 }
 
-/* ダークモード時�E�Eover背景が白浮きしなぁE��ぁE��調整�E�E*/
+/* ダークモード時のhover背景調整 */
 body.dark .theme-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
@@ -101,7 +103,7 @@ body.dark .theme-btn:hover {
   background-color: orange;
 }
 
-/* 区刁E��線、上下余白 */
+/* 区切り線・上下余白 */
 li {
   display: flex;
   align-items: center;
@@ -111,7 +113,7 @@ li {
   border-bottom: 1px solid #ccc;
 }
 
-/* 左側�E�縮んでOK */
+/* 左側は縮んでOK */
 .left {
   display: flex;
   align-items: center;
@@ -155,7 +157,7 @@ li {
   color: gray;
 }
 
-/* タスク斁E��E*/
+/* タスク本文 */
 .taskText {
   font-size: 18px;
   white-space: nowrap;
@@ -163,24 +165,24 @@ li {
   text-overflow: ellipsis;
 }
 
-/* 完亁E��スクの見た目変更 */
+/* 完了タスクの見た目 */
 li.completed .taskText,
 li.completed .weatherInfo,
 li.completed .dueDate {
-  /* 取消緁E*/
+  /* 取消線 */
   text-decoration: line-through;
-  /* 透�E度薁E�� */
+  /* 透明度調整 */
   opacity: 0.5;
 }
 
-/* 期限日の入力忁E��エラーのメチE��ージ */
+/* 期限日の入力エラーメッセージ */
 .error-message {
   font-size: 14px;
   margin-top: 8px;
   color: crimson;
 }
 
-/* 優先度に応じた書弁E*/
+/* 優先度に応じた装飾 */
 .priority-high {
   border-left: 4px solid crimson;
   background-color: #ffecec;
@@ -194,14 +196,14 @@ li.completed .dueDate {
 /* 優先度に応じた書式：ダークモード用 */
 body.dark .priority-high {
   border-left: 4px solid crimson;
-  background-color: #3b1c1c; /* (濁E��赤系) */
-  color: #ffcccc; /* めE��薁E��赤系チE��スチE*/
+  background-color: #3b1c1c; /* (濃い赤系) */
+  color: #ffcccc; /* 淡い赤系テキスト */
 }
 
 body.dark .priority-low {
   border-left: 4px solid teal;
-  background-color: #163540; /* (濁E��青系) */
-  color: #b0dfff; /* 薁E��の青テキスチE*/
+  background-color: #163540; /* (濃い青系) */
+  color: #b0dfff; /* 淡い青テキスト */
 }
 
 .fading {
@@ -215,19 +217,19 @@ body.dark .priority-low {
 
 /* sort-buttonにFontAwesomeアイコンを擬似要素で付加 */
 .sort-button::after {
-  font-family: 'Font Awesome 6 Free';
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   margin-left: 0.5em;
 }
 
-/* 昁E��E���E�E�E*/
+/* 昇順アイコン */
 .sort-asc::after {
-  content: '\f062'; /* fa-arrow-up */
+  content: "\f062"; /* fa-arrow-up */
 }
 
-/* 降頁E���E�E�E*/
+/* 降順アイコン */
 .sort-desc::after {
-  content: '\f063'; /* fa-arrow-down */
+  content: "\f063"; /* fa-arrow-down */
 }
 
 .task-visible {
@@ -289,14 +291,13 @@ body.dark .priority-low {
   color: black;
 }
 
-.status-area {
+/* .status-area {
   padding-left: 8px;
-}
+} */
 
-.weather-summary {
+/* .weather-summary {
   margin-left: 8px;
-}
-
+} */
 
 .weather-label {
   font-weight: 600;
@@ -313,13 +314,13 @@ body.dark .priority-low {
   text-align: center;
 }
 
-/* スマ�E対忁E*/
+/* スマホ対応 */
 @media (max-width: 480px) {
   li {
     padding: 10px 8px;
   }
 
-  input[type='checkbox'] {
+  input[type="checkbox"] {
     transform: scale(1.2);
   }
 
@@ -337,7 +338,7 @@ textarea {
   font-size: 16px;
 }
 
-/* Apple推奨タチE�E領域 */
+/* Apple推奨タップ領域 */
 input {
   min-height: 44px;
 }
@@ -349,7 +350,7 @@ input {
   flex-wrap: nowrap;
 }
 
-/* 日付�E優先度 共送E*/
+/* 日付・優先度 共通 */
 .input-row input,
 .input-row select,
 .input-row button {
@@ -359,14 +360,14 @@ input {
   padding: 6px 8px;
 }
 
-/* 入力ゾーン全体を縦に積�E */
+/* 入力ゾーンを縦積み */
 .controls {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* タスク入力欁E��横幁E��杯 */
+/* タスク入力欄を横幅いっぱい */
 #taskInput {
   width: 100%;
   box-sizing: border-box;
@@ -374,22 +375,22 @@ input {
   padding: 8px 12px;
 }
 
-/* 日付�E固定幁E��EPhoneで崩れにくい目安！E*/
+/* 日付の固定幅（iPhoneで崩れにくい目安） */
 .input-row #dueDate {
   flex: 0 0 140px;
   min-width: 120px;
 }
 
 .input-row #priority {
-  flex: 0 0 auto; /* ↁE伸びなぁE��E��まなぁE��まず�Eこれで確実に止める�E�E*/
-  width: 9rem; /* Normalが余裕で収まる目安。忁E��なめE8rem に */
+  flex: 0 0 auto; /* 伸びないよう固定 */
+  width: 9rem; /* Normalが余裕で収まる目安。必要なら8remに */
 }
 .input-row #addBtn {
   flex: 0 0 auto;
   white-space: nowrap;
 }
 
-/* Clear All を横一杯にしなぁE��誤タチE�E防止�E�E*/
+/* Clear All を横一杯にしない（誤タップ防止） */
 #clearAll {
   width: auto; /* 100%を解除 */
   align-items: center;
@@ -398,14 +399,14 @@ input {
   border-radius: 4px;
 }
 
-/* Add / Clear All を横並びにする衁E*/
+/* Add / Clear All を横並び */
 .action-row {
   display: flex;
   align-items: center;
-  gap: 8px; /* ボタン間�E余白 */
+  gap: 8px; /* ボタン間の余白 */
 }
 
-/* Add は左、Clear All はそ�E右�E��E然に並ぶ�E�E*/
+/* Addは左、Clear Allは右に自然に並ぶ */
 .action-row #addBtn {
   flex: 0 0 auto;
 }
@@ -413,4 +414,3 @@ input {
 .action-row #clearAll {
   flex: 0 0 auto;
 }
-
