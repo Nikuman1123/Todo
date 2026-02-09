@@ -2,12 +2,9 @@
 
 ## 📝 概要 / Overview
 
-<!-- markdownlint-disable MD033 -->
-<p align="center">
-  <img src="docs/demo_light.png" alt="ライトモード" width="45%" style="margin-right:10px;">
-  <img src="docs/demo_dark.png" alt="ダークモード" width="45%">
-</p>
-<!-- markdownlint-disable MD033 -->
+| Light                                      | Dark                                      |
+| ------------------------------------------ | ----------------------------------------- |
+| ![ライトモード](docs/demo_light_small.png) | ![ダークモード](docs/demo_dark_small.png) |
 
 このアプリは、ブラウザだけで気軽に使える **シンプルな ToDo リスト** です。
 タスクは自動的にローカル保存され、ページを再読み込みしても消えません。
@@ -27,7 +24,7 @@ Tasks are saved locally and persist across browser reloads.
 - 📌 **タスクの編集内容は自動保存（LocalStorage）**
 - ⚠️ **完了タスクのまとめて削除（Clear Completed）**
 - ☀️ **現在地の天気アイコン表示（Open‑Meteo API）**
-  
+
 - 📱 **レスポンシブ対応**
 - 🌙 **ライト / ダークテーマ切替**
 
