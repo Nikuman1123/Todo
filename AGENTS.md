@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-## 1. Agent Behavior Rules (Most Important)
+## 1. Agent Behaviour Rules (Most Important)
 
 These rules define how Codex should behave when working in this repository.
 
@@ -8,12 +8,12 @@ These rules define how Codex should behave when working in this repository.
 - Before making any file changes, clearly explain **what will be changed and why** using bullet points.
 - Never run shell commands without explicit approval (e.g., `git`, `npm`, `rm`, `mv`, `sed`).
 - Avoid destructive operations (e.g., `rm -rf`, mass deletion, large refactors) unless explicitly requested.
-- Prefer minimal diffs and keep existing behavior unchanged unless instructed otherwise.
+- Prefer minimal diffs and keep existing behaviour unchanged unless instructed otherwise.
 - If requirements or intent are unclear, ask a short clarifying question before proceeding.
 
 ---
 
-## 2. Project Structure & Module Organization
+## 2. Project Structure & Module Organisation
 
 - `index.html`  
   Contains the UI markup and all client-side JavaScript (inline `<script>`).
